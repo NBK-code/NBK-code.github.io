@@ -36,12 +36,12 @@ Given the Fokker-Planck equation describing the evolution of the particles, a na
 This equation can be solved with the trivial boundary conditions $$P_s(x=\infty) = 0$$ and $$ \frac{\partial P_s}{\partial x} = 0 $$. The resulting solution is
 
 \begin{equation}
-   P_s = \frac{1}{Z}exp\left( - \frac{2a}{b^2} U(x) \right),
+   P_s = \frac{1}{Z}\text{exp}\left( - \frac{2a}{b^2} U(x) \right),
 \end{equation}
 
-where $$ Z $$ is a normalizing constant. 
+where $$ Z $$ is the normalizing constant. 
 
-To summarize, I started with the equation describing Langevin dynamics, then showed the Fokker-Planck equation and solved for its steady state solution. The most important point I would like to emphasize again is that the Langevin dynamics doesn't capture all the information about the motion of the molecules of the liquid. Only the coarse grained information of the molecules' motion is represented in equation (1) through $$\eta(t)$$. Hence the only meaningful way to talk about the particle motion is using the probability density function $$P(x,t)$$. This should be contrasted with other systems. This is unlike other dynamics, for example, throwing a ball in vacuum. Here everything is deterministic and therefore we do not need any probability function to describe the motion of the ball.
+To summarize, I started with the equation describing Langevin dynamics, then showed the Fokker-Planck equation and solved for its steady state solution. The most important point I would like to emphasize again is that equation (1) that describes Langevin dynamics doesn't capture all the information about the motion of the molecules of the liquid. Only the coarse grained information of the molecules' motion is represented in equation (1) through $$\eta(t)$$. Due to this loss of information, the only meaningful way to talk about the particle motion is using the probability density function $$P(x,t)$$. This should be contrasted with other systems, for example, throwing a ball in vacuum. Here everything is deterministic and therefore we do not need any probability function to describe the motion of the ball.
 
 ## Score-based Generative Modeling
 
