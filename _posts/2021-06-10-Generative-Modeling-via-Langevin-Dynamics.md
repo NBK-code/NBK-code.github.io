@@ -11,7 +11,7 @@ When a particle like a pollen floats on water, it experiences a constant barrage
 
 It can be established that the dynamical equation describing the chaotic motion of the particle to be
 
-\begin{equation} \label{1}
+\begin{equation}
    \frac{\mathrm{d}x}{\mathrm{d}t} = - a \nabla U + b\eta(t).
 \end{equation}
 
