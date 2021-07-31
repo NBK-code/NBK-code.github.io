@@ -9,7 +9,7 @@ Recently I came across a very interesting method to generative modeling that has
 When a particle like a pollen floats on water, it experiences a constant barrage of collisions from the molecules of the water. Occasionally, these collisions are energetic enough to kick the particle in a particular direction. The particle as a result, exhibits a random zig zag motion. This is called the Brownian motion, named after Raboert Brown who first discovered the phenomenon in 1827, while looking through a microscope a pollen immersed in water.
 
 
-It can be established that the dynamical equation describing the chaotic motion of the particle to be
+It can be established that the dynamical equation describing the chaotic motion of the particle to be.
 
 $$ \frac{\mathrm{d}x}{\mathrm{d}t} = - a \nabla U + \sqrt(2D)\eta(t) $$.
 
