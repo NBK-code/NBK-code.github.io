@@ -97,4 +97,4 @@ The above ideas are closely related to hierarchial variational autoencoders and 
 
 ## References
 1. Yang Song's blog post "[Generative Modeling by Estimating Gradients of the Data Distribution](http://yang-song.github.io/blog/2021/score/)"
-2. Lecture notes 1,2,3 by Prof. Davide Marenduzzo, The University of Edinburgh
+2. Lecture notes [1](https://www2.ph.ed.ac.uk/~dmarendu/ASP/Section14.pdf),[2](https://www2.ph.ed.ac.uk/~dmarendu/ASP/Section15.pdf),[3](https://www2.ph.ed.ac.uk/~dmarendu/ASP/Section16.pdf) by Prof. Davide Marenduzzo, The University of Edinburgh
