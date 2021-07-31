@@ -12,12 +12,16 @@ When a particle like a pollen floats on water, it experiences a constant barrage
 It can be established that the dynamical equation describing the chaotic motion of the particle to be
 
 \begin{equation}
-   \frac{\mathrm{d}x}{\mathrm{d}t} = - a \nabla U + b\eta(t).
+   \frac{\mathrm{d}x}{\mathrm{d}t} = - a \nabla U(x) + b\eta(t).
 \end{equation}
 
 where the first term describes the friction force on the particle and the second term describes the random fluctuations in the density of the liquid. In fact, $$\eta(t)$$ is a white noise term with properties $$\langle \eta (t) \rangle = 0$$ and $$\langle \eta (t_1) \eta (t_2) \rangle = b \delta(t_1-t_2)$$. One central aspect of this equation is that it only captures a coarse grained state of the liquid as opposed to a fine grained state that precisely takes into account of the motion of all the molecules. In fact, we do not desire such a description as we will have to then specify the exact position and momentum of all the molecules in order to find the motion of the particle. In the above equation, all the random motion of the molecules is abstracted away in the white noise term $$\eta(t)$$. The dynamics produced by equation (1) is called the Langevin dynamics.
 
-It is clear that the Langevin dynamics is completely random - two particles with the same initial conditions will exhibit different motion due to the white noise term. In such a situation, it makes sense to consider a very large number of particles and ask what is the concentration of the them as time evolves. In other words, we could ask what is the probability density function of a particle as function of space and time. This can be worked out and shown that the resulting density function obeys what is called the Fokker-Planck Equation
+It is clear that the Langevin dynamics is completely random - two particles with the same initial conditions will exhibit different motion due to the white noise term. In such a situation, it makes sense to consider a very large number of particles and ask what is the concentration of the them as time evolves. In other words, we could ask what is the probability that a particle at a perticular position and time. This can be worked out and shown that the resulting probability density function obeys what is called the Fokker-Planck Equation
+
+\begin{equation}
+   \frac{\partial}{\partial t}P(x,t) =  a \frac{\partial}{\partial x}\left(\nabla U(x) \hspace{0.2cm} P(x,t)\right) + \frac{b^2}{2}\frac{\partial^2P}{\partial x^2}.
+\end{equation}
 
 [Euler's formula](https://en.wikipedia.org/wiki/Euler%27s_formula) relates the  complex exponential function to the trigonometric functions.
 
