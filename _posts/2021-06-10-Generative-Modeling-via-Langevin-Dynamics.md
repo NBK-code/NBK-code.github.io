@@ -34,7 +34,7 @@ Given the Fokker-Planck equation describing the evolution of the particles, a na
    \frac{\partial }{\partial x}\left[ a \nabla U\hspace{0.1cm} P_s + \frac{b^2}{2}\frac{\partial P_s}{\partial x} \right] =  0.
 \end{equation}
 
-This equation can be solved with the trivial boundary conditions $$P_s(x=\infty) = 0$$ and $$ \frac{\partial P_s}{\partial x} = 0 $$. The resulting solution is
+This equation can be solved with the trivial boundary conditions $$P_s(x=\infty) = 0$$ and $$ \frac{\partial P_s}{\partial x}(x=\infty) = 0 $$. The resulting solution is
 
 \begin{equation}
    P_s(x) = \frac{1}{Z}exp\left( - \frac{2a}{b^2} U(x) \right),
