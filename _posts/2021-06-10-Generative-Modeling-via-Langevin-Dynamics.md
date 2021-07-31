@@ -68,12 +68,15 @@ The main idea in Generative modeling is to learn the probability distribution of
 as it involves integrating over a very high dimensional space. One way to circumvent this problem is to use the gradient of the log probability function as
 
 \begin{equation}
-   \nabla log\left( c \hspace{0.1cm}P(x)\right) = \nabla log\left(P(x)\right),
+   \nabla log\left( c \hspace{0.1cm}p(x)\right) = \nabla log\left(p(x)\right),
 \end{equation}
 
 where $$c$$ is a constant. So how do we learn the gradient of the log probability? This is done using what is called score-matching. One starts with an objective of minimizing the Fischer divergence defined as
 
 \begin{equation}
-  E_{p(x)}\left[ ||\nabla logP(x) - s_{\theta}(x)||^2_2\right],\norm(x)
+  E_{p(x)}\left[ ||\nabla log(p(x)) - s_{\theta}(x)||^2_2\right],
 \end{equation}
 
+to learn $$\nabla log(p(x))$$. This might seem like a chicken and egg situation since we would also need to know $$p(x)$$ to evaluate the Fischer divergence. Fortunately, there exists a set of methods called score-matching that obviates the need of knowing $$p(x)$$. To proceed further, let us assume that we have learnt the gradient of the log probability. 
+
+Now, the next problem is how do we use $$\nabla log(p(x))$$ to generate samples. This is where Langevin dynamics comes in.
