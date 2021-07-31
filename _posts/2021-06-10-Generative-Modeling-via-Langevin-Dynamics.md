@@ -26,7 +26,7 @@ It is clear that the Langevin dynamics is completely random - two particles with
 Given the Fokker-Planck equation describing the evolution of the particles, a natural question to ask is what is the steady state solution? First, should there even be a steady state solution? The second question is simple to answer as after enough time, the particle will have interacted with enough number of molecules of the liquid to come to a steady state. This doesn't mean that the particle has come to rest. It just means that transitory effects due to the initial conditions will have died down and as a result the function $$P(x,t)$$ becomes independent of the time variable. Plugging in $$P(x,t) = P_s(x)$$ in equation (1), we get
 
 \begin{equation}
-   \frac{\partial }{\partial x}\[ a \nabla U\hspace{0.1cm} P_s + \frac{b^2}{2}\frac{\partial P_s}{\partial x} \] =  0.
+   \frac{\partial }{\partial x}\left[ a \nabla U\hspace{0.1cm} P_s + \frac{b^2}{2}\frac{\partial P_s}{\partial x} \right] =  0.
 \end{equation}
 
 [Euler's formula](https://en.wikipedia.org/wiki/Euler%27s_formula) relates the  complex exponential function to the trigonometric functions.
