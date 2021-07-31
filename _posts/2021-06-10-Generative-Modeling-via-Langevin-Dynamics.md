@@ -52,10 +52,10 @@ This is all the physics that we will need. I will end this section by making a f
 where we have used the fact that $$Z$$ is a constant. Another equation that will be useful for us later is the discretized version of equation (1):
 
 \begin{equation}
-   x_{i+1} - x_i = -a \nabla U(x_i) \epsilon + b \sqrt\epsilon \tilde \eta
+   x_{i+1} - x_i = -a \nabla U(x_i) \epsilon + b \sqrt\epsilon \hspace{0.1cm}\tilde \eta
 \end{equation}
 
-where $$\epsilon$$ is the small time step and $$\tilde\eta$$ follows normal distribution.
+where $$\epsilon$$ is a small time step and $$\tilde\eta$$ follows normal distribution.
 
 ## Score-based Generative Modeling
 
@@ -68,7 +68,12 @@ The main idea in Generative modeling is to learn the probability distribution of
 as it involves integrating over a very high dimensional space. One way to circumvent this problem is to use the gradient of the log probability function as
 
 \begin{equation}
-   \nabla log\left( c \hspace{0.1cm}P(x)\right) = \nabla log\left(\hspace{0.1cm}P(x)\right),
+   \nabla log\left( c \hspace{0.1cm}P(x)\right) = \nabla log\left(P(x)\right),
 \end{equation}
 
-where $$c$$ is a constant. 
+where $$c$$ is a constant. So how do we learn the gradient of the log probability? This is done using what is called score-matching. One starts with an objective of minimizing the Fischer divergence defined as
+
+\begin{equation}
+  \mathbb{E}_{p(x)}\left[ \nabla logP(x) - s_{\theta}(x)\right],
+\end{equation}
+
