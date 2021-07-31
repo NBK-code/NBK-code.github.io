@@ -13,6 +13,7 @@ It can be established that the dynamical equation describing the chaotic motion 
 
 \begin{equation}
    \frac{\mathrm{d}x}{\mathrm{d}t} = - a \nabla U + b\eta(t).
+   \label{1}
 \end{equation}
 
 where the first term describes the friction force on the particle and the second term describes the random fluctuations in the density of the liquid. In fact, $$\eta(t)$$ is a white noise term with properties $$\langle \eta (t) \rangle = 0$$ and $$\langle \eta (t_1) \eta (t_2) \rangle = b \delta(t_1-t_2)$$. One important aspect of this equation is that it only captures a coarse grained state of the liquid as opposed to a fine grained state that precisely takes into account of the motion of all the molecules. In fact, we do not desire such a description as we will have to then specify the exact position and momentum of all the molecules in order to find the motion of the particle. In the above equation, all the random motion of the molecules is abstracted away in the white noise term $$\eta(t)$$. The dynamics produced by equation (\ref{1}) is called the Langevin dynamics.
