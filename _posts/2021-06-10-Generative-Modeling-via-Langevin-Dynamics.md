@@ -4,8 +4,7 @@ mathjax: true
 layout: post
 ---
 
-Recently I came across a very interesting method to generative modeling that has its foundations in Physics. Generative modeling involves learning a probability distribution from the given data and using the learned distribution to produce new samples. 
-
+Recently I came across a very interesting method to generative modeling that has its foundations in Physics. Naturally I had to dig in. Generative modeling involves learning a probability distribution from the given dataset and using the learned distribution to produce new samples. Over the last few years, the state of the art results in this type of modeling were all produced by Generative Adversarial Networks (GANs). Recently, a new class of generative models based on learning the gradient of the distribution have gained attention. In this blog post, I will try to explain the Physics principles behind such models. 
 
 To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
 
