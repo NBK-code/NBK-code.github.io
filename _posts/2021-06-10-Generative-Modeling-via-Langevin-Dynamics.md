@@ -93,3 +93,8 @@ repeatedly for a large number of times starting with random initial conditions. 
 I started with the equation describing Langevin dynamics, exhibited Fokker-Planck equation and its steady state solution. I then moved on to score-based generative modeling where we learn the gradient of the log probability rather than the distribution itself. This way we avoid the problem of probability normalization. Once we have learnt the gradients we can use the discretized Langevin dynamics to sample from the distribution. It is quite amazing how the equations describing the physics of Brownian motion ends up providing a tool for generative modeling.
 
 The above ideas are closely related to hierarchial variational autoencoders and diffusion models. These models have been recently shown to produce results as good as GANs. I will later on in a separate blog post, elaborate on the connection to these models and possibly also provide a code walk through implementing some of the ideas presented here.
+
+
+## References
+1. Yang Song's blog post "[Generative Modeling by Estimating Gradients of the Data Distribution](http://yang-song.github.io/blog/2021/score/)"
+2. Lecture notes 1,2,3 by Prof. Davide Marenduzzo, The University of Edinburgh
