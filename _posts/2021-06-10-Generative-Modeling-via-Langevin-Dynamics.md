@@ -39,7 +39,9 @@ This equation can be solved with the trivial boundary conditions $$P_s(x=\infty)
    P_s = \frac{1}{Z}exp\left( - \frac{2a}{b^2} U(x) \right),
 \end{equation}
 
-where $$ Z $$ is a normalizing constant.
+where $$ Z $$ is a normalizing constant. 
+
+To summarize, I started with the equation describing Langevin dynamics, then showed the Fokker-Planck equation and solved for its steady state solution. The most important point I would like to emphasize again is that the Langevin dynamics doesn't capture all the information about the motion of the molecules of the liquid. Only the coarse grained information of the molecules' motion is represented in equation (1) through $$\eta(t)$$. Hence the only meaningful way to talk about the particle motion is using the probability density function $$P(x,t)$$. This should be contrasted with other systems. This is unlike other dynamics, for example, throwing a ball in vacuum. Here everything is deterministic and therefore we do not need any probability function to describe the motion of the ball.
 
 ## Score-based Generative Modeling
 
