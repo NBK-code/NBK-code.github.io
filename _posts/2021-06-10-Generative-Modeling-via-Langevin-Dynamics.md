@@ -13,6 +13,8 @@ It can be established that the dynamical equation describing the chaotic motion 
 
 $$ \frac{\mathrm{d}x}{\mathrm{d}t} = - a \nabla U + \sqrt(2D)\eta(t)$$.
 
+$$ e^{i\theta}=\cos(\theta)+i\sin(\theta) $$
+
 To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
 
 [Euler's formula](https://en.wikipedia.org/wiki/Euler%27s_formula) relates the  complex exponential function to the trigonometric functions.
