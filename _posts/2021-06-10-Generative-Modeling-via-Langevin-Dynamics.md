@@ -49,7 +49,13 @@ This is all the physics that we will need. I will end this section by making a f
    \nabla log P_s(x) = -\frac{2a}{b^2}\nabla U(x),
 \end{equation}
 
-where we have used the fact that $$Z$$ is a constant.
+where we have used the fact that $$Z$$ is a constant. Another equation that will be useful for us later is the discretized version of equation (1):
+
+\begin{equation}
+   x_{i+1} - x_i = -a \nabla U(x_i) \epsilon + b \sqrt\epsilon \tilde \eta
+\end{equation}
+
+where $$\epsilon$$ is the small time step and $$\tilde\eta$$ follows normal distribution.
 
 ## Score-based Generative Modeling
 
