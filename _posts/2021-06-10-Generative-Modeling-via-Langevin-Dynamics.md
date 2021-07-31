@@ -74,6 +74,6 @@ as it involves integrating over a very high dimensional space. One way to circum
 where $$c$$ is a constant. So how do we learn the gradient of the log probability? This is done using what is called score-matching. One starts with an objective of minimizing the Fischer divergence defined as
 
 \begin{equation}
-  E_{p(x)}\left[ ||\nabla logP(x) - s_{\theta}(x)||^2_2\right],
+  E_{p(x)}\left[ ||\nabla logP(x) - s_{\theta}(x)||^2_2\right],\norm(x)
 \end{equation}
 
