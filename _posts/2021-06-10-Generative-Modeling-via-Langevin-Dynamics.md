@@ -4,7 +4,11 @@ mathjax: true
 layout: post
 ---
 
+## Introduction
+
 Recently I came across a very interesting method to generative modeling that has its foundations in Physics. Naturally I had to dig in. Generative modeling involves learning a probability distribution from the given dataset and using the learned distribution to produce new samples. Over the last few years, the state of the art results in this type of modeling were all produced by Generative Adversarial Networks (GANs). Recently, a new class of generative models called score-based models have gained attention. As it happens, the main tools of these models come from what is called the Brownian motion - the chaotic motion of a particle (like a pollen) floating on a liquid (like water). In this blog post, I will try to explain the physics principles behind score based models. First, I will go over the physics and then come back to its connection to score-based models.
+
+## Langevin Dynamics
 
 When a particle like a pollen floats on water, it experiences a constant barrage of collisions from the molecules of the water. Occasionally, these collisions are energetic enough to kick the particle in a particular direction. The particle as a result, exhibits a random zig zag motion. This is called the Brownian motion, named after Raboert Brown who first discovered the phenomenon in 1827, while looking through a microscope a pollen immersed in water.
 
@@ -28,6 +32,16 @@ Given the Fokker-Planck equation describing the evolution of the particles, a na
 \begin{equation}
    \frac{\partial }{\partial x}\left[ a \nabla U\hspace{0.1cm} P_s + \frac{b^2}{2}\frac{\partial P_s}{\partial x} \right] =  0.
 \end{equation}
+
+This equation can be solved with the trivial boundary conditions $$P_s(x=\infty) = 0$$ and $$ \frac{\partial P_s}{\partial x} = 0 $$. The resulting solution is
+
+\begin{equation}
+   P_s = \frac{1}{Z}exp\left( - \frac{2a}{b^2} U(x) \right),
+\end{equation}
+
+where $$ Z $$ is a normalizing constant.
+
+## Score-based Generative Modeling
 
 [Euler's formula](https://en.wikipedia.org/wiki/Euler%27s_formula) relates the  complex exponential function to the trigonometric functions.
 
