@@ -59,6 +59,14 @@ where $$\epsilon$$ is the small time step and $$\tilde\eta$$ follows normal dist
 
 ## Score-based Generative Modeling
 
+The main idea in Generative modeling is to learn the probability distribution of the data and use it to generate new samples. One recurring and intractable problem in generative modeling is normalizing the learned probability function
+
+\begin{equation}
+   \int p_{\theta}(x)dx = 1,
+\end{equation}
+
+as it involves integrating over a very high dimensional space. This can be avoided if we instead learn the gradient of the probability function and if we could somehow sample using just the gradient information. 
+
 [Euler's formula](https://en.wikipedia.org/wiki/Euler%27s_formula) relates the  complex exponential function to the trigonometric functions.
 
 $$ e^{i\theta}=\cos(\theta)+i\sin(\theta) $$
