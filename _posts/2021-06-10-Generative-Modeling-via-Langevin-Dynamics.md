@@ -6,7 +6,7 @@ layout: post
 
 ## Introduction
 
-Recently I came across a very interesting method to generative modeling that has its foundations in Physics. Naturally I had to dig in. Generative modeling involves learning a probability distribution from the given dataset and using the learned distribution to produce new samples. Over the last few years, the state of the art results in this type of modeling were all produced by Generative Adversarial Networks (GANs). Recently, a new class of generative models called score-based models have gained attention. As it happens, the main tools of these models come from what is called the Brownian motion - the chaotic motion of a particle (like a pollen) floating on a liquid (like water). In this blog post, I will try to explain the physics principles behind score based models. First, I will go over the physics and then come back to its connection to score-based models.
+Recently I came across a very interesting method to generative modeling that has its foundations in Physics. Naturally I had to dig in. Generative modeling involves learning a probability distribution from the given dataset and using the learned distribution to produce new samples. Over the last few years, the state of the art results in this type of modeling were all produced by Generative Adversarial Networks (GANs). Recently, a new class of generative models called score-based models have gained attention. As it happens, the main tools of these models come from what is called the Brownian motion - the chaotic motion of a particle (like a pollen) floating on a liquid (like water). In this blog post, I will try to explain the physics principles behind score-based models. First, I will go over the physics and then come back to its connection to score-based models.
 
 ## Langevin Dynamics
 
@@ -22,13 +22,13 @@ It can be established that the dynamical equation describing the chaotic motion 
 
 where the first term describes the friction force on the particle and the second term describes the random fluctuations in the density of the liquid. In fact, $$\eta(t)$$ is a white noise term with properties $$\langle \eta (t) \rangle = 0$$ and $$\langle \eta (t_1) \eta (t_2) \rangle = b \delta(t_1-t_2)$$. One central aspect of this equation is that it only captures a coarse grained state of the liquid as opposed to a fine grained state that precisely takes into account of the motion of all the molecules. In fact, we do not desire such a description as we will have to then specify the exact position and momentum of all the molecules in order to find the motion of the particle. In the above equation, all the random motion of the molecules is abstracted away in the white noise term $$\eta(t)$$. The dynamics produced by equation (1) is called the Langevin dynamics.
 
-It is clear that the Langevin dynamics is completely random - two particles with the same initial conditions will exhibit different motion due to the white noise term. In such a situation, it makes sense to consider a very large number of particles and ask what is the concentration of the them as time evolves. In other words, we could ask what is the probability that a particle at a perticular position and time. This can be worked out and shown that the resulting probability density function $$P(x,t)$$ obeys what is called the Fokker-Planck wquation
+It is clear that the Langevin dynamics is completely random - two particles with the same initial conditions will exhibit different motion due to the white noise term. In such a situation, it makes sense to consider a very large number of particles and ask what is the concentration of the them as time evolves. In other words, we could ask what is the probability that a particle is at a perticular position and time. This can be worked out and shown that the resulting probability density function $$P(x,t)$$ obeys what is called the Fokker-Planck equation
 
 \begin{equation}
    \frac{\partial P}{\partial t}(x,t) =  a \frac{\partial}{\partial x}\left(\nabla U(x) \hspace{0.1cm} P(x,t)\right) + \frac{b^2}{2}\frac{\partial^2P}{\partial x^2}(x,t).
 \end{equation}
 
-Given the Fokker-Planck equation describing the evolution of the particles, a natural question to ask is what is the steady state solution? First, should there even be a steady state solution? The second question is simple to answer as after enough time, the particle will have interacted with enough number of molecules of the liquid to come to a steady state. This doesn't mean that the particle has come to rest. It just means that transitory effects due to the initial conditions will have died down and as a result the function $$P(x,t)$$ becomes independent of the time variable. Plugging in $$P(x,t) = P_s(x)$$ in equation (1), we get
+Given the Fokker-Planck equation describing the evolution of the particles, a natural question to ask is what is the steady state solution? First, should there even be a steady state solution? The second question is simple to answer as after enough time, the particle will have interacted with enough number of molecules of the liquid to come to a steady state. This doesn't mean that the particle has come to rest. It just means that transitory effects due to the initial conditions will have died down and as a result the function $$P(x,t)$$ becomes independent of the time variable. Plugging $$P(x,t) = P_s(x)$$ in equation (1), we get
 
 \begin{equation}
    \frac{\partial }{\partial x}\left[ a \nabla U\hspace{0.1cm} P_s + \frac{b^2}{2}\frac{\partial P_s}{\partial x} \right] =  0.
@@ -42,7 +42,7 @@ This equation can be solved with the trivial boundary conditions $$P_s(x=\infty)
 
 where $$ Z $$ is the normalizing constant. 
 
-To summarize, I started with the equation describing Langevin dynamics, then showed the Fokker-Planck equation and solved for its steady state solution. The most important point I would like to emphasize again is that equation (1) that describes Langevin dynamics doesn't capture all the information about the motion of the molecules of the liquid. Only the coarse grained information of the molecules' motion is represented in equation (1) through $$\eta(t)$$. Due to this loss of information, the only meaningful way to talk about the particle motion is using the probability density function $$P(x,t)$$. This should be contrasted with other systems, for example, throwing a ball in vacuum. Here everything is deterministic and therefore we do not need any probability function to describe the motion of the ball.
+To summarize, I started with the equation describing Langevin dynamics, then showed the Fokker-Planck equation and solved for its steady state solution. The most important point I would like to emphasize again is that equation (1) that describes Langevin dynamics doesn't capture all the information about the motion of the molecules of the liquid. Only the coarse grained information of the molecules' motion is represented in equation (1) through $$\eta(t)$$. Due to this loss of information, the only meaningful way to talk about the particle motion is using the probability density function $$P(x,t)$$. This should be contrasted with other systems, for example, motion of a ball in vacuum. Here everything is deterministic and therefore we do not need any probability function to describe the motion of the ball.
 
 This is all the physics that we will need. I will end this section by making a few observations that will be useful later. First, notice that the gradient of $$log P_s(x)$$ is
 
@@ -56,7 +56,7 @@ where we have used the fact that $$Z$$ is a constant. Another equation that will
    x_{i+1} - x_i = -a \nabla U(x_i) \epsilon + b \sqrt\epsilon \hspace{0.1cm}\tilde \eta
 \end{equation}
 
-where $$\epsilon$$ is a small time step and $$\tilde\eta$$ follows normal distribution.
+where $$\epsilon$$ is a small time step and $$\tilde\eta$$ is sampled from normal distribution.
 
 ## Score-based Generative Modeling
 
