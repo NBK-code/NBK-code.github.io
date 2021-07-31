@@ -11,7 +11,7 @@ When a particle like a pollen floats on water, it experiences a constant barrage
 
 It can be established that the dynamical equation describing the chaotic motion of the particle to be
 
-$$ \frac{\mathrm{d}x}{\mathrm{d}t} = - a \nabla U + \sqrt(2D)\eta(t)$$.
+$$ \frac{\mathrm{d}x}{\mathrm{d}t} = - a \nabla U + \sqrt(2D)\eta(t) $$.
 
 $$ e^{i\theta}=\cos(\theta)+i\sin(\theta) $$
 
