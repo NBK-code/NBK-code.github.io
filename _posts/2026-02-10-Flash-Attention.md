@@ -1,4 +1,3 @@
-
 ---
 title: "Central Limit Theorem"
 layout: post
