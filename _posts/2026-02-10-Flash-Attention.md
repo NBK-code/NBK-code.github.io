@@ -120,3 +120,53 @@ p_i = \frac{e^{s_i - m_N}}{l_N}.
 \end{equation}
 This yields the exact same result as the standard softmax,
 while requiring only a single pass through the data and constant memory overhead.
+
+### Block Computation
+Large matrix multiplications are often too big to fit entirely in fast on-chip memory, requiring data to be repeatedly
+loaded from and written back to slower main memory.
+To address this, modern high-performance algorithms use a technique known as tiling or block computation.
+The main idea is to divide the matrices into smaller submatrices (or tiles) that fit within fast memory, allowing
+computation to proceed on one tile at a time while reusing loaded data efficiently.
+
+Consider the matrix multiplication $$C = AB$$, where
+$$A \in \mathbb{R}^{M \times K}$$, $$B \in \mathbb{R}^{K \times N}$$, and
+$$C \in \mathbb{R}^{M \times N}$$.
+Instead of computing the entire result at once, we partition the matrices into blocks of size
+$$B_M \times B_K$$ and $$B_K \times B_N$$, such that
+\begin{equation}
+A =
+\begin{bmatrix}
+A_{11} & A_{12} & \cdots & A_{1p} \\
+A_{21} & A_{22} & \cdots & A_{2p} \\
+\vdots & \vdots & \ddots & \vdots \\
+A_{m1} & A_{m2} & \cdots & A_{mp}
+\end{bmatrix},
+\qquad
+B =
+\begin{bmatrix}
+B_{11} & B_{12} & \cdots & B_{1n} \\
+B_{21} & B_{22} & \cdots & B_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+B_{p1} & B_{p2} & \cdots & B_{pn}
+\end{bmatrix}.
+\end{equation}
+
+Each block $$A_{ij}$$ or $$B_{ij}$$ represents a small submatrix, for example:
+\begin{equation}
+A_{11} =
+\begin{bmatrix}
+a_{11} & a_{12} & \cdots & a_{1B_K} \\
+a_{21} & a_{22} & \cdots & a_{2B_K} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{B_M1} & a_{B_M2} & \cdots & a_{B_MB_K}
+\end{bmatrix}
+\end{equation}
+Each output block $$C_{ij}$$ is computed as a sum of products between corresponding tiles:
+\begin{equation}
+C_{ij} = \sum_{k=1}^{p} A_{ik} B_{kj}
+\end{equation}
+This means that one pair of blocks $$A_{ik}$$ and $$B_{kj}$$ is loaded into fast memory,
+multiplied to produce a partial result, and then accumulated into $$C_{ij}$$.
+By performing the computation block by block, the algorithm minimizes memory movement while maximizing data reuse. This blockwise strategy forms the basis of most efficient matrix multiplication kernels,
+as it balances the limited capacity of fast memory with the need to minimize data transfer.
+
