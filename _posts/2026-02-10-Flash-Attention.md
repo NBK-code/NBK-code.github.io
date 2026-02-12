@@ -71,25 +71,25 @@ memory traffic and leads to significant speedups over standard attention while m
 ## Flash Attention Algorithm
 ### Forward Pass
 There are three ingredients that go into constructing the forward pass of flash attention:
-\begin{enumerate}
-    \item Numerically stable softmax
-    \item Online softmax
-    \item Block computation of matrix multiplication
-\end{enumerate}
-\subsubsection{Numerically Stable Softmax}
+
+ - Numerically stable softmax
+ - Online softmax
+ - Block computation of matrix multiplication
+
+#### Numerically Stable Softmax
 The softmax operation converts raw attention scores into normalized probabilities, ensuring that the weights
 assigned to all key positions for each query sum to one. However, directly computing
-\[
-\operatorname{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}
-\]
-can lead to numerical overflow or underflow when the values of \(x_i\) are large in magnitude.
+\begin{equation}
+\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}
+\end{equation}
+can lead to numerical overflow or underflow when the values of $$x_i$$ are large in magnitude.
 To improve stability, the softmax is implemented in its numerically stable form by subtracting the maximum value within each row:
-\[
-\operatorname{softmax}(x_i) = \frac{e^{x_i - \max_j(x_j)}}{\sum_k e^{x_k - \max_j(x_j)}}.
-\]
-Notice that the new $\operatorname{softmax}(x_i)$ still computes the same value as $e^{-\max_j(x_j)}$ in the numerator and the denominator cancel each other out. But now $x_i - \max_j(x_j)$ is always less than or equal to zero and hence $e^{-\max_j(x_j)}$ do not explode. This formulation ensures that all exponential arguments are non-positive, preventing overflow while preserving the exact mathematical result.
+\begin{equation}
+\text{softmax}(x_i) = \frac{e^{x_i - \max_j(x_j)}}{\sum_k e^{x_k - \max_j(x_j)}}.
+\end{equation}
+Notice that the new $$\text{softmax}(x_i)$$ still computes the same value as $$e^{-\max_j(x_j)}$$ in the numerator and the denominator cancel each other out. But now $$x_i - \max_j(x_j)$$ is always less than or equal to zero and hence $$e^{-\max_j(x_j)}$$ do not explode. This formulation ensures that all exponential arguments are non-positive, preventing overflow while preserving the exact mathematical result.
 
-\subsubsection{Online Softmax}
+#### Online Softmax
 In the standard implementation, the softmax for each query vector requires access to all its attention scores
 before normalization. This means that the entire set of scores must be computed and stored in memory,
 which is not feasible when working with long sequences.
