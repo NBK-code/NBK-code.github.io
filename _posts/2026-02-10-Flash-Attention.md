@@ -133,7 +133,8 @@ $$A \in \mathbb{R}^{M \times K}$$, $$B \in \mathbb{R}^{K \times N}$$, and
 $$C \in \mathbb{R}^{M \times N}$$.
 Instead of computing the entire result at once, we partition the matrices into blocks of size
 $$B_M \times B_K$$ and $$B_K \times B_N$$, such that
-\begin{equation}
+
+$$
 A =
 \begin{bmatrix}
 A_{11} & A_{12} & \cdots & A_{1p} \\
@@ -149,9 +150,10 @@ B_{21} & B_{22} & \cdots & B_{2n} \\
 \vdots & \vdots & \ddots & \vdots \\
 B_{p1} & B_{p2} & \cdots & B_{pn}
 \end{bmatrix}.
-\end{equation}
+$$
 
 Each block $$A_{ij}$$ or $$B_{ij}$$ represents a small submatrix, for example:
+
 $$
 A_{11} =
 \begin{bmatrix}
@@ -161,6 +163,7 @@ a_{21} & a_{22} & \cdots & a_{2B_K} \\
 a_{B_M1} & a_{B_M2} & \cdots & a_{B_MB_K}
 \end{bmatrix}
 $$
+
 Each output block $$C_{ij}$$ is computed as a sum of products between corresponding tiles:
 \begin{equation}
 C_{ij} = \sum_{k=1}^{p} A_{ik} B_{kj}
