@@ -152,7 +152,7 @@ B_{p1} & B_{p2} & \cdots & B_{pn}
 \end{equation}
 
 Each block $$A_{ij}$$ or $$B_{ij}$$ represents a small submatrix, for example:
-\begin{equation}
+$$
 A_{11} =
 \begin{bmatrix}
 a_{11} & a_{12} & \cdots & a_{1B_K} \\
@@ -160,7 +160,7 @@ a_{21} & a_{22} & \cdots & a_{2B_K} \\
 \vdots & \vdots & \ddots & \vdots \\
 a_{B_M1} & a_{B_M2} & \cdots & a_{B_MB_K}
 \end{bmatrix}
-\end{equation}
+$$
 Each output block $$C_{ij}$$ is computed as a sum of products between corresponding tiles:
 \begin{equation}
 C_{ij} = \sum_{k=1}^{p} A_{ik} B_{kj}
