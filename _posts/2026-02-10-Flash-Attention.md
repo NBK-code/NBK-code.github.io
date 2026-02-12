@@ -93,23 +93,22 @@ Notice that the new $$\text{softmax}(x_i)$$ still computes the same value as $$e
 In the standard implementation, the softmax for each query vector requires access to all its attention scores
 before normalization. This means that the entire set of scores must be computed and stored in memory,
 which is not feasible when working with long sequences.
-To avoid this, FlashAttention computes the softmax in an \textit{online} manner, processing one segment
+To avoid this, FlashAttention computes the softmax in an online manner, processing one segment
 of the scores at a time while maintaining running statistics that allow exact normalization.
 
 For a single query, let the attention scores be represented as a sequence of values
-\(s_1, s_2, \dots, s_N\).
-Instead of computing the maximum and sum over all scores at once,
+$$s_1, s_2, \dots, s_N$$. Instead of computing the maximum and summing over all the scores at once,
 the algorithm updates them incrementally.
-After processing the first \(i\) scores, it keeps track of
-the running maximum \(m_i\) and normalization factor \(l_i\):
-\[
+After processing the first $$i$$ scores, it keeps track of
+the running maximum $$m_i$$ and normalization factor $$l_i$$:
+\begin{equation}
 m_i = \max(m_{i-1}, s_i), \qquad
 l_i = e^{m_{i-1}-m_i}l_{i-1} + e^{s_i - m_i}.
-\]
+\end{equation}
 
-The first term, \(e^{m_{i-1}-m_i}l_{i-1}\), rescales the previously accumulated normalization factor \(l_{i-1}\)
-to account for any change in the running maximum from \(m_{i-1}\) to \(m_i\),
+The first term, $$e^{m_{i-1}-m_i}l_{i-1}$$, rescales the previously accumulated normalization factor $$l_{i-1}$$
+to account for any change in the running maximum from $$m_{i-1}$$ to $$m_i$$,
 ensuring that the exponents remain numerically stable even when new scores exceed the previous maximum.
-The second term, \(e^{s_i - m_i}\), adds the contribution from the newly encountered score.
+The second term, $$e^{s_i - m_i}$$, adds the contribution from the newly encountered score.
 Together, these updates allow the algorithm to maintain the exact normalization constant as if all scores
 had been processed simultaneously, but using only constant memory.
