@@ -67,3 +67,49 @@ matrix. It performs the softmax operation incrementally over these blocks (a tec
 and recomputes the necessary quantities during the backward pass instead of reading them from memory.
 Despite performing a comparable number of arithmetic operations, this IO-efficient design drastically reduces
 memory traffic and leads to significant speedups over standard attention while maintaining exact results.
+
+## Flash Attention Algorithm
+### Forward Pass
+There are three ingredients that go into constructing the forward pass of flash attention:
+\begin{enumerate}
+    \item Numerically stable softmax
+    \item Online softmax
+    \item Block computation of matrix multiplication
+\end{enumerate}
+\subsubsection{Numerically Stable Softmax}
+The softmax operation converts raw attention scores into normalized probabilities, ensuring that the weights
+assigned to all key positions for each query sum to one. However, directly computing
+\[
+\operatorname{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}
+\]
+can lead to numerical overflow or underflow when the values of \(x_i\) are large in magnitude.
+To improve stability, the softmax is implemented in its numerically stable form by subtracting the maximum value within each row:
+\[
+\operatorname{softmax}(x_i) = \frac{e^{x_i - \max_j(x_j)}}{\sum_k e^{x_k - \max_j(x_j)}}.
+\]
+Notice that the new $\operatorname{softmax}(x_i)$ still computes the same value as $e^{-\max_j(x_j)}$ in the numerator and the denominator cancel each other out. But now $x_i - \max_j(x_j)$ is always less than or equal to zero and hence $e^{-\max_j(x_j)}$ do not explode. This formulation ensures that all exponential arguments are non-positive, preventing overflow while preserving the exact mathematical result.
+
+\subsubsection{Online Softmax}
+In the standard implementation, the softmax for each query vector requires access to all its attention scores
+before normalization. This means that the entire set of scores must be computed and stored in memory,
+which is not feasible when working with long sequences.
+To avoid this, FlashAttention computes the softmax in an \textit{online} manner, processing one segment
+of the scores at a time while maintaining running statistics that allow exact normalization.
+
+For a single query, let the attention scores be represented as a sequence of values
+\(s_1, s_2, \dots, s_N\).
+Instead of computing the maximum and sum over all scores at once,
+the algorithm updates them incrementally.
+After processing the first \(i\) scores, it keeps track of
+the running maximum \(m_i\) and normalization factor \(l_i\):
+\[
+m_i = \max(m_{i-1}, s_i), \qquad
+l_i = e^{m_{i-1}-m_i}l_{i-1} + e^{s_i - m_i}.
+\]
+
+The first term, \(e^{m_{i-1}-m_i}l_{i-1}\), rescales the previously accumulated normalization factor \(l_{i-1}\)
+to account for any change in the running maximum from \(m_{i-1}\) to \(m_i\),
+ensuring that the exponents remain numerically stable even when new scores exceed the previous maximum.
+The second term, \(e^{s_i - m_i}\), adds the contribution from the newly encountered score.
+Together, these updates allow the algorithm to maintain the exact normalization constant as if all scores
+had been processed simultaneously, but using only constant memory.
