@@ -24,7 +24,7 @@ speed and scalability on long sequences.
 In the self-attention mechanism, the output for each token is computed as
 \begin{equation}
 O = \text{softmax}\left(\frac{QK^{T}}{\sqrt{d}}\right)V,
-\end{equation},
+\end{equation}
 where $Q, K$, and $V$ are the query, key, and value matrices, and d is the head dimension. This operation
 allows each token to attend to all others in the sequence, capturing contextual dependencies effectively.
 
