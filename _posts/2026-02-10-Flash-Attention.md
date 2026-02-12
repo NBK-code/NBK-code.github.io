@@ -112,3 +112,11 @@ ensuring that the exponents remain numerically stable even when new scores excee
 The second term, $$e^{s_i - m_i}$$, adds the contribution from the newly encountered score.
 Together, these updates allow the algorithm to maintain the exact normalization constant as if all scores
 had been processed simultaneously, but using only constant memory.
+
+Once all $$N$$ scores have been processed, the final maximum $$m_N$$ and normalization factor $$l_N$$
+are used to compute the softmax output for each element:
+\begin{equation}
+p_i = \frac{e^{s_i - m_N}}{l_N}.
+\end{equation}
+This yields the exact same result as the standard softmax,
+while requiring only a single pass through the data and constant memory overhead.
