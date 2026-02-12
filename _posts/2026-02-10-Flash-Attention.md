@@ -4,6 +4,7 @@ layout: post
 ---
 
 #Introduction
+
 The Transformer architecture changed the way sequence data is modeled by replacing recurrence with
 self-attention, where every token can directly interact with every other token. This design captures long-range
 relationships effectively but comes with a high computational and memory cost that grows rapidly with
