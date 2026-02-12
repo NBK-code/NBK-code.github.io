@@ -173,3 +173,60 @@ multiplied to produce a partial result, and then accumulated into $$C_{ij}$$.
 By performing the computation block by block, the algorithm minimizes memory movement while maximizing data reuse. This blockwise strategy forms the basis of most efficient matrix multiplication kernels,
 as it balances the limited capacity of fast memory with the need to minimize data transfer.
 
+### Putting It All Together
+
+We now combine the ideas of numerically stable softmax, online softmax, and block computation
+to describe the complete FlashAttention forward pass.
+
+**High-Level Idea**
+The FlashAttention forward pass can be summarized as follows:
+ - **Tiling**: Split the query ($$Q$$), key ($$K$), and value ($V$) matrices into smaller tiles that fit in fast on-chip memory. Each query tile $$Q_i \in \mathbb{R}^{B_Q \times d}$$ is processed sequentially against all key/value tiles $$K_j, V_j \in \mathbb{R}^{B_K \times d}$$.
+ - **Streaming computation**: Keep the query tile $$Q_i$$ resident in fast memory while streaming the key/value tiles one at a time from slower global memory.
+ - **Online updates**: For each pair of tiles $$(Q_i, K_j, V_j)$$, compute partial attention scores and update running per-row quantities:
+        \begin{itemize}
+            \item \(m_{ij}\): running maximum (for numerical stability)
+            \item \(l_{ij}\): normalization factor (for softmax scaling)
+            \item \(O_i\): accumulated output
+        \end{itemize}
+ -  **Numerical stability**: Apply rescaling using the factor $$\exp(m_{ij-1} - m_{ij})$$ to keep all quantities consistent under changing maxima.
+    \item \textbf{Final normalization:} After iterating through all key/value tiles, normalize \(O_i\) by the final \(l_{iN}\) to obtain the exact softmax output for that query tile.
+\end{itemize}
+
+\paragraph{Algorithm}
+For each pair of tiles \((Q_i, K_j, V_j)\):
+\[
+S_{ij} = Q_i K_j^{T},
+\]
+\[
+m_{ij} = \max(\text{rowmax}(S_{ij}), m_{ij-1}),
+\]
+\[
+P_{ij} = \exp(S_{ij} - m_{ij}),
+\]
+\[
+l_{ij} = \text{rowsum}(P_{ij}) + l_{ij-1} \exp(m_{ij-1} - m_{ij}),
+\]
+\[
+O_i = \text{diag}(\exp(m_{ij-1} - m_{ij})) O_i + P_{ij} V_j.
+\]
+
+After all key/value tiles are processed, the final normalization is applied:
+\[
+O_i = (\text{diag}(l_{iN}))^{-1} O_i,
+\]
+where \( N \) is the total number of key/value tiles.
+
+Here, \( m_{ij} \) represents the updated running maximum for each query row,
+and \( l_{ij} \) is the corresponding normalization factor accumulated so far.
+The matrix exponential and maximum operations are applied elementwise across rows of the tile.
+The rescaling factor \( \exp(m_{ij-1} - m_{ij}) \) ensures that the previously accumulated quantities
+are adjusted to the new numerical maximum, maintaining numerical stability across iterations.
+
+Each query tile \( Q_i \) remains in on-chip memory throughout computation,
+while key/value tiles \( (K_j, V_j) \) are streamed from global memory.
+At every step, only small per-row quantities (\(m_i\), \(l_i\), and \(O_i\)) are updated,
+avoiding the need to materialize the large \(N \times N\) attention matrix.
+This fusion of block computation and online softmax enables FlashAttention
+to compute exact attention efficiently while drastically reducing memory traffic.
+
+
