@@ -11,6 +11,7 @@ relationships effectively but comes with a high computational and memory cost th
 sequence length. Earlier methods such as Sparse Attention, Linformer, Performer, and Longformer tried
 to reduce this cost by using approximations like sparsity or low-rank projections. While these approaches
 improved efficiency, they often sacrificed exactness or generality.
+
 FlashAttention addresses this challenge without compromising accuracy. It is an IO-aware algorithm
 that accelerates the computation of self-attention by focusing on efficient data movement rather than
 mathematical shortcuts. By reorganizing how attention is computed and how data flows through GPU
