@@ -25,15 +25,13 @@ In the self-attention mechanism, the output for each token is computed as
 \begin{equation}
 O = \text{softmax}\left(\frac{QK^{T}}{\sqrt{d}}\right)V,
 \end{equation},
-where Q, K, and V are the query, key, and value matrices, and d is the head dimension. This operation
+where $Q, K$, and $V$ are the query, key, and value matrices, and d is the head dimension. This operation
 allows each token to attend to all others in the sequence, capturing contextual dependencies effectively.
 
 ### Computational and Memory Costs
-The computational and memory requirements of self-attention increase rapidly with sequence length N. The
-matrix multiplication QKT
-involves O(N2d) operations, and the resulting attention matrix of size N × N
-must be stored temporarily during computation, requiring O(N2
-) space. Although this quadratic scaling is
+The computational and memory requirements of self-attention increase rapidly with sequence length $N$. The
+matrix multiplication $QK^T$ involves $O(N^2d)$ operations, and the resulting attention matrix of size $N \times N$
+must be stored temporarily during computation, requiring $O(N^2)$ space. Although this quadratic scaling is
 inherent to the self-attention mechanism, in practice the major bottleneck arises not from the arithmetic itself
 but from the repeated reading and writing of large intermediate matrices between different levels of memory.
 
