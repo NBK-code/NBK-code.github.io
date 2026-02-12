@@ -183,9 +183,13 @@ The FlashAttention forward pass can be summarized as follows:
  - **Tiling**: Split the query ($$Q$$), key ($$K$), and value ($V$) matrices into smaller tiles that fit in fast on-chip memory. Each query tile $$Q_i$$ \in $$\mathbb{R}^{B_Q \times d}$$ is processed sequentially against all key/value tiles $$K_j, V_j \in \mathbb{R}^{B_K \times d}$$.
  - **Streaming computation**: Keep the query tile $$Q_i$$ resident in fast memory while streaming the key/value tiles one at a time from slower global memory.
  - **Online updates**: For each pair of tiles $$(Q_i, K_j, V_j)$$, compute partial attention scores and update running per-row quantities:
+   
  -- $$m_{ij}$$: running maximum (for numerical stability)
+ 
  -- $$l_{ij}$$: normalization factor (for softmax scaling)
+ 
  -- $$O_i$$: accumulated output
+ 
  -  **Numerical stability**: Apply rescaling using the factor $$\exp(m_{ij-1} - m_{ij})$$ to keep all quantities consistent under changing maxima.
  -  **Final normalization**: After iterating through all key/value tiles, normalize $$O_i$$ by the final $$l_{iN}$$ to obtain the exact softmax output for that query tile.
      
