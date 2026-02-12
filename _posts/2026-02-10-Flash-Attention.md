@@ -1,5 +1,6 @@
 ---
 title: "Flash Attention"
+mathjax: true
 layout: post
 ---
 
