@@ -336,7 +336,7 @@ $$
 dQ_{ij} = \frac{\partial \mathcal{L}}{\partial Q_{ij}},\qquad dK_{ij} = \frac{\partial \mathcal{L}}{\partial K_{ij}},\qquad dV_{ij} = \frac{\partial \mathcal{L}}{\partial V_{ij}},
 $$
 
-given the gradient with respect to the output $$ dO_{ij} = \partial \mathcal{L}/\partial O_{ij}$$.
+given the gradient with respect to the output $$dO_{ij} = \partial \mathcal{L}/\partial O_{ij}$$.
 
 Now, let us get the gradients one by one. We will start with the easiest.
 
