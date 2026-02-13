@@ -224,4 +224,37 @@ avoiding the need to materialize the large $$N \times N$$ attention matrix.
 This fusion of block computation and online softmax enables FlashAttention
 to compute exact attention efficiently while drastically reducing memory traffic.
 
+## Backward Pass
+
+We now describe the backward pass of flash attention, which computes gradients with respect to the query, key, and value matrices without storing the full $$N\times N$$ attention matrix. Like the forward pass, it uses the principles of tiling, online recomputation, and numerical stability.
+
+### Gradient Calculations
+Here I will provide a detailed derivation of the gradients. The derivation given in the flash attention paper is a little confusing, and hence I will provide my own derivation.
+
+We have the following equations:
+\begin{equation}
+S = \frac{QK^T}{\sqrt{d}},\qquad P = \text{softmax}(S), \qquad O = PV.
+\end{equation}
+We can write these equations explicitly with all the indices as follows:
+\begin{equation}
+S_{ij} = \sum_k\frac{Q_{ik}K_{jk}}{\sqrt{d}},\qquad P_{ij}=\text{softmax}(S_{ij})=\frac{\exp{(\sum_kQ_{ik}K_{jk}/\sqrt{d})}}{\sum_l \exp{(\sum_mQ_{im}K_{lm}/\sqrt{d})}},\qquad O_{ij} = \sum_kP_{ik}V_{kj}.
+\end{equation}
+Our problem is to find the gradients
+\begin{equation}
+\[dQ_{ij} = \frac{\partial \mathcal{L}}{\partial Q_{ij}},\qquad dK_{ij} = \frac{\partial \mathcal{L}}{\partial K_{ij}},\qquad dV_{ij} = \frac{\partial \mathcal{L}}{\partial V_{ij}},
+\end{equation}
+given the gradient with respect to the output $$ dO_{ij} = \partial \mathcal{L}/\partial O_{ij}$$.
+
+Now, let us get the gradients one by one. We will start with the easiest.
+\begin{equation*}
+    \begin{split}
+        dV_{ij} &= \frac{\partial \mathcal{L}}{\partial V_{ij}}\\
+        &= \sum_{mn}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial V_{ij}}\\
+        &= \sum_{mn}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial (\sum_{l}P_{ml}V_{ln})}{\partial V_{ij}}\\
+        &= \sum_{mnl}\frac{\partial \mathcal{L}}{\partial O_{mn}}P_{ml}\delta_{il}\delta_{nj}\\
+        &= \sum_{m}\frac{\partial \mathcal{L}}{\partial O_{mj}}P_{mi}\\
+        &=\sum_{m}(P^T)_{im}\frac{\partial \mathcal{L}}{\partial O_{mj}}.
+    \end{split}
+\end{equation*}
+
 
