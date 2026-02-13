@@ -558,7 +558,8 @@ This blockwise formulation reproduces the exact gradients of standard attention 
 materialization of the full $$N\times N$$ matrices $$P$$ and $$dP$$, enabling the memory-efficient backward pass used in FlashAttention.
 
 ### Pseudocode
-\begin{verbatim}
+
+```python
 # Preprocess: compute D[i] = sum_j O[i,j] * dO[i,j]
 for each query_tile Q_t:
     load O_t, dO_t
@@ -588,6 +589,7 @@ for each query_tile Q_t:
         dS = P * (dP - rowsum(P * dP)[:,None])
         dQ_t += (dS @ K_b) / sqrt(d)
     store dQ_t
-\end{verbatim}
+```
+
 
 
