@@ -265,34 +265,38 @@ $$
 $$
 
 This can be written as
-\[dV_{ij} = \sum_mP^T_{im}dO_{mj}.\]
-Now let us now on to $dQ$ and $dK$. 
+
+$$dV_{ij} = \sum_mP^T_{im}dO_{mj}.
+$$
+Now let us now on to $$dQ$$ and $$dK$$. 
 In the above derivation, we used Kronecker delta function, which is defined as
-\[
+$$
 \delta_{ij} =
 \begin{cases}
 1, & \text{if } i = j,\\[4pt]
 0, & \text{if } i \neq j.
 \end{cases}
-\]
+$$
 Using chain rule, we have
-\begin{equation*}
+$$
     \begin{split}
         dQ_{ij}&=\sum_{mnklrt}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}\\
         &=\sum_{klrt}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}
     \end{split}
-\end{equation*}
+$$
 Similarly
-\begin{equation*}
+$$
     \begin{split}
         dK_{ij}&=\sum_{mnklrt}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial K_{ij}}\\
         &=\sum_{klrt}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial K_{ij}}
     \end{split}
-\end{equation*}
-So for both $dQ$ and $dK$ we need to find $\partial P_{kl}/\partial S_{rt}$. We have
-\[P_{kl}=\frac{e^{S_{kl}}}{\sum_me^{S_{km}}}\]
+$$
+So for both $$dQ$$ and $$dK$$ we need to find $$\partial P_{kl}/\partial S_{rt}$$. We have
+$$
+P_{kl}=\frac{e^{S_{kl}}}{\sum_me^{S_{km}}}
+$$
 Therefore
-\begin{equation*}
+$$
     \begin{split}
         \frac{\partial P_{kl}}{\partial S_{rt}}&=\frac{\partial}{\partial S_{rt}}\left(\frac{e^{S_{kl}}}{\sum_me^{S_{km}}}\right)\\
         &=\frac{e^{S_{kl}}\delta_{kr}\delta_{lt}(\sum_me^{S_{km}})-e^{S_{kl}}(\sum_me^{S_{km}}\delta_{kr}\delta_{mt})}{(\sum_me^{S_{km}})^2}\\
@@ -300,7 +304,7 @@ Therefore
         &=\frac{e^{S_{kl}}}{\sum_me^{S_{km}}}\delta_{kr}\left(\delta_{lt}-\frac{e^{S_{kt}}}{\sum_me^{S_{km}}}\right)\\
         &=P_{kl}\delta_{kr}(\delta_{lt} - P_{kt}).
     \end{split}
-\end{equation*}
+$$
 Using the above result,
 \begin{equation*}
     \begin{split}
