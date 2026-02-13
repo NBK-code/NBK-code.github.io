@@ -557,4 +557,37 @@ $$
 This blockwise formulation reproduces the exact gradients of standard attention while avoiding
 materialization of the full $$N\times N$$ matrices $$P$$ and $$dP$$, enabling the memory-efficient backward pass used in FlashAttention.
 
+### Pseudocode
+\begin{verbatim}
+# Preprocess: compute D[i] = sum_j O[i,j] * dO[i,j]
+for each query_tile Q_t:
+    load O_t, dO_t
+    D_t = rowsum(O_t * dO_t)
+    store D_t
+
+# Backward for dK, dV (fix KV block, iterate Q tiles)
+for each KV_block (K_b, V_b):
+    for each query_tile Q_t:
+        load Q_t, K_b, V_b, dO_t, M_t, D_t
+        S = Q_t @ K_b^T / sqrt(d)
+        P = exp(S - M_t)            # recomputed unnormalized block
+        dV_b += P^T @ dO_t
+        dP = dO_t @ V_b^T
+        dS = P * (dP - rowsum(P * dP)[:,None])
+        dK_b += (dS^T @ Q_t) / sqrt(d)
+# write back dK, dV
+
+# Backward for dQ (fix Q tile, iterate KV blocks)
+for each query_tile Q_t:
+    initialize dQ_t = 0
+    for each KV_block (K_b, V_b):
+        load Q_t, K_b, V_b, dO_t, M_t, D_t
+        S = Q_t @ K_b^T / sqrt(d)
+        P = exp(S - M_t)
+        dP = dO_t @ V_b^T
+        dS = P * (dP - rowsum(P * dP)[:,None])
+        dQ_t += (dS @ K_b) / sqrt(d)
+    store dQ_t
+\end{verbatim}
+
 
