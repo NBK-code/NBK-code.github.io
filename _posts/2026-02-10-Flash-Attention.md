@@ -291,53 +291,73 @@ $$
 $$
 
 Similarly
+
 $$
-    \begin{split}
+\begin{split}
         dK_{ij}&=\sum_{mnklrt}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial K_{ij}}\\
         &=\sum_{klrt}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial K_{ij}}
-    \end{split}
+\end{split}
 $$
+
 So for both $$dQ$$ and $$dK$$ we need to find $$\partial P_{kl}/\partial S_{rt}$$. We have
+
 $$
 P_{kl}=\frac{e^{S_{kl}}}{\sum_me^{S_{km}}}
 $$
+
 Therefore
+
 $$
-    \begin{split}
+\begin{split}
         \frac{\partial P_{kl}}{\partial S_{rt}}&=\frac{\partial}{\partial S_{rt}}\left(\frac{e^{S_{kl}}}{\sum_me^{S_{km}}}\right)\\
         &=\frac{e^{S_{kl}}\delta_{kr}\delta_{lt}(\sum_me^{S_{km}})-e^{S_{kl}}(\sum_me^{S_{km}}\delta_{kr}\delta_{mt})}{(\sum_me^{S_{km}})^2}\\
         &=\frac{e^{S_{kl}}\delta_{kr}\delta_{lt}(\sum_me^{S_{km}})-e^{S_{kl}}e^{S_{kt}}\delta_{kr}}{(\sum_me^{S_{km}})^2}\\
         &=\frac{e^{S_{kl}}}{\sum_me^{S_{km}}}\delta_{kr}\left(\delta_{lt}-\frac{e^{S_{kt}}}{\sum_me^{S_{km}}}\right)\\
         &=P_{kl}\delta_{kr}(\delta_{lt} - P_{kt}).
-    \end{split}
+\end{split}
 $$
+
 Using the above result,
-\begin{equation*}
-    \begin{split}
+
+$$
+\begin{split}
         \sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}&=\sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}P_{kl}\delta_{kr}(\delta_{lt} - P_{kt})\\
         &=P_{rt}\left(\frac{\partial \mathcal{L}}{\partial P_{rt}}-\sum_{l}P_{rl}\frac{\partial \mathcal{L}}{\partial P_{rl}}\right)
-    \end{split}
-\end{equation*}
+\end{split}
+$$
+
 Now, the second term
-\begin{equation*}
-    \begin{split}
+
+$$
+\begin{split}
         \sum_{l}P_{rl}\frac{\partial \mathcal{L}}{\partial P_{rl}}&=\sum_{mnl}P_{rl}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{rl}}\\
         &=\sum_{mnlt}P_{rl}\frac{\partial \mathcal{L}}{\partial O_{mn}}\delta_{mr}\delta_{tl}V_{tn}\\
         &=\sum_{nl}P_{rl}\frac{\partial \mathcal{L}}{\partial O_{rn}}V_{ln}\\
         &=\sum_{n}O_{rn}\frac{\partial \mathcal{L}}{\partial O_{rn}}
-    \end{split}
-\end{equation*}
-The above result allows us to trade the summation over the sequence length ($l$) for the summation over the head dimension ($d$). Therefore,
-\begin{equation*}
-    \sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}=P_{rt}\frac{\partial \mathcal{L}}{\partial P_{rt}}-P_{rt}\sum_{n}O_{rn}\frac{\partial \mathcal{L}}{\partial O_{rn}}.
-\end{equation*}
+\end{split}
+$$
+
+The above result allows us to trade the summation over the sequence length ($$l$$) for the summation over the head dimension ($$d$$). Therefore,
+
+$$
+\sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}=P_{rt}\frac{\partial \mathcal{L}}{\partial P_{rt}}-P_{rt}\sum_{n}O_{rn}\frac{\partial \mathcal{L}}{\partial O_{rn}}.
+$$
+
 Notice that
-\[dS_{rt}=\frac{\partial \mathcal{L}}{\partial S_{rt}} = \sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\]
+$$
+dS_{rt}=\frac{\partial \mathcal{L}}{\partial S_{rt}} = \sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}
+$$
+
 So we have,
-\[dS_{rt} = P_{rt}\left(dP_{rt}-\sum_nO_{rn}dO_{rn}\right).\]
-We will define $D_r=\sum_nO_{rn}dO_{rn}$. Therefore, we finally have
-\[dS_{rt}=P_{rt}(dP_{rt}-D_r).\]
-We still have to find $dP_{rt}$ to make use of the above formula in computations. We have
+$$
+dS_{rt} = P_{rt}\left(dP_{rt}-\sum_nO_{rn}dO_{rn}\right).
+$$
+We will define $$D_r=\sum_nO_{rn}dO_{rn}$$. Therefore, we finally have
+$$
+dS_{rt}=P_{rt}(dP_{rt}-D_r).
+$$
+We still have to find $$dP_{rt}$$ to make use of the above formula in computations. We have
+
 \begin{equation*}
     \begin{split}
         dP_{rt} = \frac{\partial\mathcal{L}}{\partial P_{rt}} &= \sum_{mn}\frac{\partial\mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{rt}}\\
