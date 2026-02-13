@@ -534,8 +534,9 @@ For each key/value tile $$j$$:
 - **Gradients for $$Q$$**:  
     For each query tile $$i$$:
 
--- Initialize $$dQ_i = 0$$.
--- For each key/value tile $$j$$:
+    -- Initialize $$dQ_i = 0$$.
+  
+    -- For each key/value tile $$j$$:
 
 $$
 S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},\qquad
