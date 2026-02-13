@@ -358,45 +358,51 @@ dS_{rt}=P_{rt}(dP_{rt}-D_r).
 $$
 We still have to find $$dP_{rt}$$ to make use of the above formula in computations. We have
 
-\begin{equation*}
-    \begin{split}
+$$
+\begin{split}
         dP_{rt} = \frac{\partial\mathcal{L}}{\partial P_{rt}} &= \sum_{mn}\frac{\partial\mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{rt}}\\
         &=\sum_{mnl}dO_{mn}\delta_{mr}\delta_{lt}V_{ln}\\
         &=\sum_{n}dO_{rn}V_{tn}\\
         &=\sum_{n}dO_{rn}V^T_{nt}
-    \end{split}
-\end{equation*}
-Now we can use $dS_{rt}$ to find the gradients with respect to $Q$ and $K$,
-\begin{equation*}
-    \begin{split}
+\end{split}
+$$
+
+Now we can use $$dS_{rt}$$ to find the gradients with respect to $$Q$$ and $$K$$,
+
+$$
+\begin{split}
 dQ_{ij}&=\sum_{rt}\frac{\partial\mathcal{L}}{\partial S_{rt}} \frac{\partial S_{rt}}{\partial Q_{ij}}\\
 &=\frac{1}{\sqrt{d}}\sum_{rtm}dS_{rt}\delta_{ri}\delta_{mj}K_{tm}\\
 &=\frac{1}{\sqrt{d}}\sum_tdS_{it}K_{tj}.
-    \end{split}
-\end{equation*}
+\end{split}
+$$
+
 Similarly,
-\begin{equation*}
-    \begin{split}
+
+$$
+\begin{split}
 dK_{ij}&=\sum_{rt}\frac{\partial\mathcal{L}}{\partial S_{rt}} \frac{\partial S_{rt}}{\partial K_{ij}}\\
 &=\frac{1}{\sqrt{d}}\sum_{rtm}dS_{rt}Q_{rm}\delta_{ti}\delta_{mj}\\
 &=\frac{1}{\sqrt{d}}\sum_rdS_{ri}Q_{rj}\\
 &=\frac{1}{\sqrt{d}}\sum_rdS^T_{ir}Q_{rj}.
-    \end{split}
-\end{equation*}
+\end{split}
+$$
+
 The final set of equations are
-\begin{equation*}
-    \begin{split}
+$$
+\begin{split}
         dV_{ij} &= \sum_kP^T_{ik}dO_{kj},\\
         dP_{ij}&=\sum_{k}dO_{ik}V^T_{kj}\\
         D_i&=\sum_jO_{ij}dO_{ij},\\
         dS_{ij}&=P_{ij}(dP_{ij}-D_i),\\
         dQ_{ij} &= \frac{1}{\sqrt{d}}\sum_kdS_{ik}K_{kj},\\
         dK_{ij} &= \frac{1}{\sqrt{d}}\sum_kdS^T_{ik}Q_{kj}.
-    \end{split}
-\end{equation*}
+\end{split}
+$$
+
 We can use all the above formulae to get the gradients.
 
-\subsubsection{The Log-Sum-Exp Trick and Forward-Pass Statistics}
+### The Log-Sum-Exp Trick and Forward-Pass Statistics
 
 A standard implementation of attention would store the full probability matrix
 \(P \in \mathbb{R}^{N \times N}\) during the forward pass so that it can be
