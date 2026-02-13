@@ -452,45 +452,53 @@ without ever computing maximum and normalization factor again.
 ### Blockwise Form of the Backward Pass
 
 To connect the index-level gradients with the FlashAttention implementation, we now express all
-quantities in terms of \emph{blocks} (tiles).  
-Let the sequence dimension be partitioned into query tiles \(Q_i \in \mathbb{R}^{B_Q \times d}\) and 
-key/value tiles \(K_j, V_j \in \mathbb{R}^{B_K \times d}\).
-For each pair of tiles \((i,j)\), define the block matrices
-\[
+quantities in terms of blocks (tiles).  
+Let the sequence dimension be partitioned into query tiles $$Q_i \in \mathbb{R}^{B_Q \times d}$$ and 
+key/value tiles $$K_j, V_j \in \mathbb{R}^{B_K \times d}$$.
+For each pair of tiles $$(i,j)$$, define the block matrices
+
+$$
 S_{ij} \in \mathbb{R}^{B_Q \times B_K},\qquad
 P_{ij} \in \mathbb{R}^{B_Q \times B_K},\qquad
 dP_{ij}, dS_{ij} \in \mathbb{R}^{B_Q \times B_K}.
-\]
+$$
 
-\paragraph{Blockwise equations.}
+**Blockwise equations**
 The global elementwise formulas translate blockwise into
-\[
+
+$$
 S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},
 \qquad
 P_{ij} = \exp\!\left(S_{ij} - M_i[:,{\!}\text{ None}]\right),
-\]
-\[
+$$
+
+$$
 dP_{ij} = dO_i V_j^{T},
 \qquad
 D_i = \mathrm{rowsum}(O_i \odot dO_i),
-\]
-\[
+$$
+
+$$
 dS_{ij} = P_{ij} \odot \left(dP_{ij} - D_i[:,{\!}\text{ None}]\right),
-\]
-\[
+$$
+
+$$
 dV_j \;\mathrel{+}= P_{ij}^{T} dO_i,\qquad
 dK_j \;\mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij}^{T} Q_i,\qquad
 dQ_i \;\mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij} K_j.
-\]
+$$
 
-Here, \(M_i\) is the log-sum-exp normalization vector stored from the forward pass (None in $M_i[:, \text{ None}]$ is to broadcast the values of $M_i$ across the columns), 
-and \(D_i\) ($\odot$ is elementwise multiplication) is a per-row scalar defined by
-\[
+Here, $$M_i$$ is the log-sum-exp normalization vector stored from the forward pass (None in $M_i[:, \text{ None}]$ is to broadcast the values of $M_i$ across the columns), 
+and $$D_i$$ ($$\odot$$ is elementwise multiplication) is a per-row scalar defined by
+
+$$
 D_i = \sum_{\alpha} O_{i\alpha} dO_{i\alpha}.
-\]
-The notation \(\mathrm{rowsum}(\cdot)\) sums across columns.
+$$
 
-\paragraph{Blockwise backward algorithm.}
+The notation $$\mathrm{rowsum}(\cdot)$$ sums across columns.
+
+**Blockwise backward algorithm**
+
 Using these quantities, the backward pass proceeds as follows.
 
 \begin{itemize}
