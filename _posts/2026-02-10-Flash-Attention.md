@@ -431,18 +431,23 @@ $$
 $$
 
 Notice that
+
 $$
 dS_{rt}=\frac{\partial \mathcal{L}}{\partial S_{rt}} = \sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}
 $$
 
 So we have,
+
 $$
 dS_{rt} = P_{rt}\left(dP_{rt}-\sum_nO_{rn}dO_{rn}\right).
 $$
+
 We will define $$D_r=\sum_nO_{rn}dO_{rn}$$. Therefore, we finally have
+
 $$
 dS_{rt}=P_{rt}(dP_{rt}-D_r).
 $$
+
 We still have to find $$dP_{rt}$$ to make use of the above formula in computations. We have
 
 $$
