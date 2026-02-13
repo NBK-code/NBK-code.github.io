@@ -282,10 +282,11 @@ $$
 $$
 
 Using chain rule, we have
+
 $$
 \begin{split}
-dQ_{ij}&=\sum_{mnklrt}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}\\
-&=\sum_{klrt}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}
+ dQ_{ij}&=\sum_{mnklrt}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}\\
+ &=\sum_{klrt}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}
 \end{split}
 $$
 
