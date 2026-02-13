@@ -653,5 +653,30 @@ for each query_tile Q_t:
     store dQ_t
 ```
 
+## References
 
+[1] Tri Dao et al.,  
+*FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness*,  
+arXiv:2205.14135, 2022.  
+Available: [https://arxiv.org/abs/2205.14135](https://arxiv.org/abs/2205.14135)
 
+[2] Dao AILab,  
+*FlashAttention — implementation repository*,  
+GitHub, 2022.  
+Available: [GitHub Repository](https://github.com/Dao-AILab/flash-attention)
+
+## How to Cite This Post
+
+Nagaraj, B. (2026). *FlashAttention Explained*.  
+Available at: https://nbk-code.github.io/2026/02/10/flash-attention.html
+
+### BibTeX
+
+```bibtex
+@misc{nagaraj2026flashattention,
+  author       = {Balakrishnan Nagaraj},
+  title        = {FlashAttention Explained},
+  year         = {2026},
+  howpublished = {\url{https://nbk-code.github.io/2026/02/10/flash-attention.html}},
+  note         = {Blog post}
+}
