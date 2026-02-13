@@ -264,4 +264,243 @@ $$
 \end{split}
 $$
 
+This can be written as
+\[dV_{ij} = \sum_mP^T_{im}dO_{mj}.\]
+Now let us now on to $dQ$ and $dK$. 
+In the above derivation, we used Kronecker delta function, which is defined as
+\[
+\delta_{ij} =
+\begin{cases}
+1, & \text{if } i = j,\\[4pt]
+0, & \text{if } i \neq j.
+\end{cases}
+\]
+Using chain rule, we have
+\begin{equation*}
+    \begin{split}
+        dQ_{ij}&=\sum_{mnklrt}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}\\
+        &=\sum_{klrt}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}
+    \end{split}
+\end{equation*}
+Similarly
+\begin{equation*}
+    \begin{split}
+        dK_{ij}&=\sum_{mnklrt}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial K_{ij}}\\
+        &=\sum_{klrt}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial K_{ij}}
+    \end{split}
+\end{equation*}
+So for both $dQ$ and $dK$ we need to find $\partial P_{kl}/\partial S_{rt}$. We have
+\[P_{kl}=\frac{e^{S_{kl}}}{\sum_me^{S_{km}}}\]
+Therefore
+\begin{equation*}
+    \begin{split}
+        \frac{\partial P_{kl}}{\partial S_{rt}}&=\frac{\partial}{\partial S_{rt}}\left(\frac{e^{S_{kl}}}{\sum_me^{S_{km}}}\right)\\
+        &=\frac{e^{S_{kl}}\delta_{kr}\delta_{lt}(\sum_me^{S_{km}})-e^{S_{kl}}(\sum_me^{S_{km}}\delta_{kr}\delta_{mt})}{(\sum_me^{S_{km}})^2}\\
+        &=\frac{e^{S_{kl}}\delta_{kr}\delta_{lt}(\sum_me^{S_{km}})-e^{S_{kl}}e^{S_{kt}}\delta_{kr}}{(\sum_me^{S_{km}})^2}\\
+        &=\frac{e^{S_{kl}}}{\sum_me^{S_{km}}}\delta_{kr}\left(\delta_{lt}-\frac{e^{S_{kt}}}{\sum_me^{S_{km}}}\right)\\
+        &=P_{kl}\delta_{kr}(\delta_{lt} - P_{kt}).
+    \end{split}
+\end{equation*}
+Using the above result,
+\begin{equation*}
+    \begin{split}
+        \sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}&=\sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}P_{kl}\delta_{kr}(\delta_{lt} - P_{kt})\\
+        &=P_{rt}\left(\frac{\partial \mathcal{L}}{\partial P_{rt}}-\sum_{l}P_{rl}\frac{\partial \mathcal{L}}{\partial P_{rl}}\right)
+    \end{split}
+\end{equation*}
+Now, the second term
+\begin{equation*}
+    \begin{split}
+        \sum_{l}P_{rl}\frac{\partial \mathcal{L}}{\partial P_{rl}}&=\sum_{mnl}P_{rl}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{rl}}\\
+        &=\sum_{mnlt}P_{rl}\frac{\partial \mathcal{L}}{\partial O_{mn}}\delta_{mr}\delta_{tl}V_{tn}\\
+        &=\sum_{nl}P_{rl}\frac{\partial \mathcal{L}}{\partial O_{rn}}V_{ln}\\
+        &=\sum_{n}O_{rn}\frac{\partial \mathcal{L}}{\partial O_{rn}}
+    \end{split}
+\end{equation*}
+The above result allows us to trade the summation over the sequence length ($l$) for the summation over the head dimension ($d$). Therefore,
+\begin{equation*}
+    \sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}=P_{rt}\frac{\partial \mathcal{L}}{\partial P_{rt}}-P_{rt}\sum_{n}O_{rn}\frac{\partial \mathcal{L}}{\partial O_{rn}}.
+\end{equation*}
+Notice that
+\[dS_{rt}=\frac{\partial \mathcal{L}}{\partial S_{rt}} = \sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\]
+So we have,
+\[dS_{rt} = P_{rt}\left(dP_{rt}-\sum_nO_{rn}dO_{rn}\right).\]
+We will define $D_r=\sum_nO_{rn}dO_{rn}$. Therefore, we finally have
+\[dS_{rt}=P_{rt}(dP_{rt}-D_r).\]
+We still have to find $dP_{rt}$ to make use of the above formula in computations. We have
+\begin{equation*}
+    \begin{split}
+        dP_{rt} = \frac{\partial\mathcal{L}}{\partial P_{rt}} &= \sum_{mn}\frac{\partial\mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{rt}}\\
+        &=\sum_{mnl}dO_{mn}\delta_{mr}\delta_{lt}V_{ln}\\
+        &=\sum_{n}dO_{rn}V_{tn}\\
+        &=\sum_{n}dO_{rn}V^T_{nt}
+    \end{split}
+\end{equation*}
+Now we can use $dS_{rt}$ to find the gradients with respect to $Q$ and $K$,
+\begin{equation*}
+    \begin{split}
+dQ_{ij}&=\sum_{rt}\frac{\partial\mathcal{L}}{\partial S_{rt}} \frac{\partial S_{rt}}{\partial Q_{ij}}\\
+&=\frac{1}{\sqrt{d}}\sum_{rtm}dS_{rt}\delta_{ri}\delta_{mj}K_{tm}\\
+&=\frac{1}{\sqrt{d}}\sum_tdS_{it}K_{tj}.
+    \end{split}
+\end{equation*}
+Similarly,
+\begin{equation*}
+    \begin{split}
+dK_{ij}&=\sum_{rt}\frac{\partial\mathcal{L}}{\partial S_{rt}} \frac{\partial S_{rt}}{\partial K_{ij}}\\
+&=\frac{1}{\sqrt{d}}\sum_{rtm}dS_{rt}Q_{rm}\delta_{ti}\delta_{mj}\\
+&=\frac{1}{\sqrt{d}}\sum_rdS_{ri}Q_{rj}\\
+&=\frac{1}{\sqrt{d}}\sum_rdS^T_{ir}Q_{rj}.
+    \end{split}
+\end{equation*}
+The final set of equations are
+\begin{equation*}
+    \begin{split}
+        dV_{ij} &= \sum_kP^T_{ik}dO_{kj},\\
+        dP_{ij}&=\sum_{k}dO_{ik}V^T_{kj}\\
+        D_i&=\sum_jO_{ij}dO_{ij},\\
+        dS_{ij}&=P_{ij}(dP_{ij}-D_i),\\
+        dQ_{ij} &= \frac{1}{\sqrt{d}}\sum_kdS_{ik}K_{kj},\\
+        dK_{ij} &= \frac{1}{\sqrt{d}}\sum_kdS^T_{ik}Q_{kj}.
+    \end{split}
+\end{equation*}
+We can use all the above formulae to get the gradients.
+
+\subsubsection{The Log-Sum-Exp Trick and Forward-Pass Statistics}
+
+A standard implementation of attention would store the full probability matrix
+\(P \in \mathbb{R}^{N \times N}\) during the forward pass so that it can be
+reused in the backward pass.  
+However, this is infeasible for long sequences: the matrix \(P\) requires
+\(O(N^{2})\) memory, which quickly exceeds GPU capacity even for moderate
+values of \(N\).  FlashAttention avoids this cost entirely by \emph{never
+storing \(P\)}.  Instead, the backward pass simply recomputes the relevant
+blocks of \(P\) on the fly.
+
+To make this recomputation possible, the forward pass stores only a single
+scalar per query row: the \emph{log-sum-exp} value
+\[
+M_i \;=\; m_i + \log(\ell_i)
+\;=\; \log\!\left(\sum_{j} e^{S_{ij}}\right),
+\]
+where \(m_i = \max_j S_{ij}\) is the running maximum accumulated across key
+tiles, and
+\(\ell_i = \sum_j e^{S_{ij}-m_i}\) is the corresponding normalization factor
+computed in a numerically stable way.  
+These two quantities are maintained incrementally during the tiled forward
+computation, and combined into \(M_i\) at the end of the forward pass.
+
+During the backward pass, when a block of scores \(S_{ij}\) is recomputed,
+the corresponding block of softmax probabilities is recovered using the
+log-sum-exp identity:
+\[
+P_{ij}
+\;=\;
+\exp\!\bigl(S_{ij} - M_i\bigr).
+\]
+This works because
+\[
+\exp(S_{ij} - M_i)
+=\frac{e^{S_{ij}-m_i}}{\sum_k e^{S_{ik}-m_i}}
+=\operatorname{softmax}(S_{ij}).
+\]
+Thus, storing \(M_i\) is sufficient to compute the correct softmax of\(S\) exactly,
+without ever computing maximum and normalization factor again.
+
+\subsubsection{Blockwise Form of the Backward Pass}
+
+To connect the index-level gradients with the FlashAttention implementation, we now express all
+quantities in terms of \emph{blocks} (tiles).  
+Let the sequence dimension be partitioned into query tiles \(Q_i \in \mathbb{R}^{B_Q \times d}\) and 
+key/value tiles \(K_j, V_j \in \mathbb{R}^{B_K \times d}\).
+For each pair of tiles \((i,j)\), define the block matrices
+\[
+S_{ij} \in \mathbb{R}^{B_Q \times B_K},\qquad
+P_{ij} \in \mathbb{R}^{B_Q \times B_K},\qquad
+dP_{ij}, dS_{ij} \in \mathbb{R}^{B_Q \times B_K}.
+\]
+
+\paragraph{Blockwise equations.}
+The global elementwise formulas translate blockwise into
+\[
+S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},
+\qquad
+P_{ij} = \exp\!\left(S_{ij} - M_i[:,{\!}\text{ None}]\right),
+\]
+\[
+dP_{ij} = dO_i V_j^{T},
+\qquad
+D_i = \mathrm{rowsum}(O_i \odot dO_i),
+\]
+\[
+dS_{ij} = P_{ij} \odot \left(dP_{ij} - D_i[:,{\!}\text{ None}]\right),
+\]
+\[
+dV_j \;\mathrel{+}= P_{ij}^{T} dO_i,\qquad
+dK_j \;\mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij}^{T} Q_i,\qquad
+dQ_i \;\mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij} K_j.
+\]
+
+Here, \(M_i\) is the log-sum-exp normalization vector stored from the forward pass (None in $M_i[:, \text{ None}]$ is to broadcast the values of $M_i$ across the columns), 
+and \(D_i\) ($\odot$ is elementwise multiplication) is a per-row scalar defined by
+\[
+D_i = \sum_{\alpha} O_{i\alpha} dO_{i\alpha}.
+\]
+The notation \(\mathrm{rowsum}(\cdot)\) sums across columns.
+
+\paragraph{Blockwise backward algorithm.}
+Using these quantities, the backward pass proceeds as follows.
+
+\begin{itemize}
+    \item \textbf{Preprocess:}  
+    For each query tile \(i\), load \(O_i\) and \(dO_i\) and compute  
+    \[
+        D_i = \mathrm{rowsum}(O_i \odot dO_i).
+    \]
+    This is a small per-row vector reused throughout the backward pass.
+
+    \item \textbf{Gradients for \(K\) and \(V\):}  
+    For each key/value tile \(j\):
+    \begin{enumerate}
+        \item Load \(K_j, V_j\).
+        \item For each query tile \(i\):
+        \[
+        S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},\qquad
+        P_{ij} = \exp\!\left(S_{ij} - M_i[:,\text{ None}]\right),
+        \]
+        \[
+        dV_j \mathrel{+}= P_{ij}^{T} dO_i,
+        \qquad
+        dP_{ij} = dO_i V_j^{T},
+        \]
+        \[
+        dS_{ij} = P_{ij} \odot \left(dP_{ij} - D_i[:,\text{ None}]\right),
+        \qquad
+        dK_j \mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij}^{T} Q_i.
+        \]
+    \end{enumerate}
+
+    \item \textbf{Gradients for \(Q\):}  
+    For each query tile \(i\):
+    \begin{enumerate}
+        \item Initialize \(dQ_i = 0\).
+        \item For each key/value tile \(j\):
+        \[
+        S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},\qquad
+        P_{ij} = \exp\!\left(S_{ij} - M_i[:,\text{ None}]\right),
+        \]
+        \[
+        dP_{ij} = dO_i V_j^{T},\qquad
+        dS_{ij} = P_{ij} \odot \left(dP_{ij} - D_i[:,\text{ None}]\right),
+        \]
+        \[
+        dQ_i \mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij} K_j.
+        \]
+    \end{enumerate}
+\end{itemize}
+
+\noindent
+This blockwise formulation reproduces the exact gradients of standard attention while avoiding
+materialization of the full \(N\times N\) matrices \(P\) and \(dP\), enabling the memory-efficient backward pass used in FlashAttention.
+
 
