@@ -224,6 +224,67 @@ avoiding the need to materialize the large $$N \times N$$ attention matrix.
 This fusion of block computation and online softmax enables FlashAttention
 to compute exact attention efficiently while drastically reducing memory traffic.
 
+### Pseudocode
+
+```text
+# FlashAttention - Forward pass (tile-wise pseudocode)
+
+Inputs:
+  Q: (N, d)           # full query matrix (per head)
+  K: (N, d)           # full key matrix (per head)
+  V: (N, d)           # full value matrix (per head)
+  B_Q, B_K            # query-tile and key/value-tile sizes
+  scale = 1 / sqrt(d)
+
+For each query_tile_index i = 0 .. ceil(N / B_Q)-1:
+  Q_i = load_tile(Q, i, B_Q)           # shape (B_Q, d)
+  initialize:
+    m     = -inf * ones(B_Q)           # running max per query row
+    l     = zeros(B_Q)                 # running normalizer per query row
+    O_acc = zeros(B_Q, d)              # output accumulator for tile
+
+  For each kv_tile_index j = 0 .. ceil(N / B_K)-1:
+    K_j = load_tile(K, j, B_K)         # shape (B_K, d)
+    V_j = load_tile(V, j, B_K)         # shape (B_K, d)
+
+    # Compute partial logits for this tile
+    S = (Q_i @ K_j^T) * scale          # shape (B_Q, B_K)
+
+    # (Optional) apply causal mask to S here if autoregressive
+
+    # Row-wise block maximum
+    s_max = row_max(S)                 # shape (B_Q)
+
+    # Update running maximum (elementwise per row)
+    m_new = max(m, s_max)              # shape (B_Q)
+
+    # Compute exponentials in numerically stable frame
+    P = exp(S - m_new[:, None])        # shape (B_Q, B_K)
+
+    # Update running normalizer l with rescaling
+    l = exp(m - m_new) * l + row_sum(P)   # shape (B_Q)
+
+    # Rescale previous accumulator and add contribution from this block
+    O_acc = exp(m - m_new)[:, None] * O_acc + P @ V_j   # shape (B_Q, d)
+
+    # Commit updated running max
+    m = m_new
+
+  # End kv-tiles loop
+
+  # Final normalization for this query tile
+  O_i = O_acc / l[:, None]             # shape (B_Q, d)
+
+  # Store output tile into O
+  store_tile(O, i, O_i)
+
+# End query-tiles loop
+
+Output:
+  O: (N, d)  # attention outputs per head (reconstructed from tiles)
+```
+
+
 ## Backward Pass
 
 We now describe the backward pass of flash attention, which computes gradients with respect to the query, key, and value matrices without storing the full $$N\times N$$ attention matrix. Like the forward pass, it uses the principles of tiling, online recomputation, and numerical stability.
@@ -431,7 +492,8 @@ computation, and combined into $$M_i$$ at the end of the forward pass.
 
 During the backward pass, when a block of scores $$S_{ij}$$ is recomputed,
 the corresponding block of softmax probabilities is recovered using the
-log-sum-exp identity:\
+log-sum-exp identity:
+
 $$
 P_{ij}
 \;=\;
@@ -514,7 +576,7 @@ $$
      -- Load $$K_j, V_j$$.
    
      -- For each query tile $$i$$:
-   
+
    $$
    S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},\qquad
    P_{ij} = \exp\!\left(S_{ij} - M_i[:,\text{ None}]\right),
