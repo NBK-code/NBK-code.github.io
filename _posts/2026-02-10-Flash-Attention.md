@@ -499,8 +499,7 @@ We can use all the above formulae to get the gradients.
 
 A standard implementation of attention would store the full probability matrix
 $$P \in \mathbb{R}^{N \times N}$$ during the forward pass so that it can be
-reused in the backward pass.  
-However, this is infeasible for long sequences: the matrix $$P$$ requires
+reused in the backward pass. However, this is infeasible for long sequences: the matrix $$P$$ requires
 $$O(N^{2})$$ memory, which quickly exceeds GPU capacity even for moderate
 values of $$N$$.  FlashAttention avoids this cost entirely by never
 storing $$P$$.  Instead, the backward pass simply recomputes the relevant
@@ -545,8 +544,7 @@ without ever computing maximum and normalization factor again.
 ### Blockwise Form of the Backward Pass
 
 To connect the index-level gradients with the FlashAttention implementation, we now express all
-quantities in terms of blocks (tiles).  
-Let the sequence dimension be partitioned into query tiles $$Q_i \in \mathbb{R}^{B_Q \times d}$$ and 
+quantities in terms of blocks (tiles). Let the sequence dimension be partitioned into query tiles $$Q_i \in \mathbb{R}^{B_Q \times d}$$ and 
 key/value tiles $$K_j, V_j \in \mathbb{R}^{B_K \times d}$$.
 For each pair of tiles $$(i,j)$$, define the block matrices
 
