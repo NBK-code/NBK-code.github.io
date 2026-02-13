@@ -577,22 +577,22 @@ $$
    
      -- For each query tile $$i$$:
 
-   $$
-   S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},\qquad
-   P_{ij} = \exp\!\left(S_{ij} - M_i[:,\text{ None}]\right),
-   $$
+$$
+S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},\qquad
+P_{ij} = \exp\!\left(S_{ij} - M_i[:,\text{ None}]\right),
+$$
    
-   $$
-   dV_j \mathrel{+}= P_{ij}^{T} dO_i,
-   \qquad
-   dP_{ij} = dO_i V_j^{T},
-   $$
+$$
+dV_j \mathrel{+}= P_{ij}^{T} dO_i,
+\qquad
+dP_{ij} = dO_i V_j^{T},
+$$
    
-   $$
-   dS_{ij} = P_{ij} \odot \left(dP_{ij} - D_i[:,\text{ None}]\right),
-   \qquad
-   dK_j \mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij}^{T} Q_i.
-   $$
+$$
+dS_{ij} = P_{ij} \odot \left(dP_{ij} - D_i[:,\text{ None}]\right),
+\qquad
+dK_j \mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij}^{T} Q_i.
+$$
 
 
 - **Gradients for $$Q$$**:  
@@ -621,7 +621,7 @@ materialization of the full $$N\times N$$ matrices $$P$$ and $$dP$$, enabling th
 
 ### Pseudocode
 
-```python
+```text
 # Preprocess: compute D[i] = sum_j O[i,j] * dO[i,j]
 for each query_tile Q_t:
     load O_t, dO_t
