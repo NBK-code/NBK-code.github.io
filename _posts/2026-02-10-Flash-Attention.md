@@ -337,7 +337,7 @@ $$
 \end{split}
 $$
 
-The above result allows us to trade the summation over the sequence length ($$l$$) for the summation over the head dimension ($$d$$). Therefore,
+The above result allows us to trade the summation over the sequence length $$l$$ for the summation over the head dimension $$d$$. Therefore,
 
 $$
 \sum_{kl}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}=P_{rt}\frac{\partial \mathcal{L}}{\partial P_{rt}}-P_{rt}\sum_{n}O_{rn}\frac{\partial \mathcal{L}}{\partial O_{rn}}.
@@ -389,6 +389,7 @@ dK_{ij}&=\sum_{rt}\frac{\partial\mathcal{L}}{\partial S_{rt}} \frac{\partial S_{
 $$
 
 The final set of equations are
+
 $$
 \begin{split}
         dV_{ij} &= \sum_kP^T_{ik}dO_{kj},\\
@@ -405,45 +406,50 @@ We can use all the above formulae to get the gradients.
 ### The Log-Sum-Exp Trick and Forward-Pass Statistics
 
 A standard implementation of attention would store the full probability matrix
-\(P \in \mathbb{R}^{N \times N}\) during the forward pass so that it can be
+$$P \in \mathbb{R}^{N \times N}$$ during the forward pass so that it can be
 reused in the backward pass.  
-However, this is infeasible for long sequences: the matrix \(P\) requires
-\(O(N^{2})\) memory, which quickly exceeds GPU capacity even for moderate
-values of \(N\).  FlashAttention avoids this cost entirely by \emph{never
-storing \(P\)}.  Instead, the backward pass simply recomputes the relevant
-blocks of \(P\) on the fly.
+However, this is infeasible for long sequences: the matrix $$P$$ requires
+$$O(N^{2})$$ memory, which quickly exceeds GPU capacity even for moderate
+values of $$N$$.  FlashAttention avoids this cost entirely by never
+storing $$P$$.  Instead, the backward pass simply recomputes the relevant
+blocks of $$P$$ on the fly.
 
 To make this recomputation possible, the forward pass stores only a single
-scalar per query row: the \emph{log-sum-exp} value
-\[
+scalar per query row: the log-sum-exp value
+
+$$
 M_i \;=\; m_i + \log(\ell_i)
 \;=\; \log\!\left(\sum_{j} e^{S_{ij}}\right),
-\]
-where \(m_i = \max_j S_{ij}\) is the running maximum accumulated across key
+$$
+
+where $$m_i = \max_j S_{ij}$$ is the running maximum accumulated across key
 tiles, and
-\(\ell_i = \sum_j e^{S_{ij}-m_i}\) is the corresponding normalization factor
+$$\ell_i = \sum_j e^{S_{ij}-m_i}$$ is the corresponding normalization factor
 computed in a numerically stable way.  
 These two quantities are maintained incrementally during the tiled forward
-computation, and combined into \(M_i\) at the end of the forward pass.
+computation, and combined into $$M_i$$ at the end of the forward pass.
 
-During the backward pass, when a block of scores \(S_{ij}\) is recomputed,
+During the backward pass, when a block of scores $$S_{ij}$$ is recomputed,
 the corresponding block of softmax probabilities is recovered using the
-log-sum-exp identity:
-\[
+log-sum-exp identity:\
+$$
 P_{ij}
 \;=\;
 \exp\!\bigl(S_{ij} - M_i\bigr).
-\]
+$$
+
 This works because
-\[
+
+$$
 \exp(S_{ij} - M_i)
 =\frac{e^{S_{ij}-m_i}}{\sum_k e^{S_{ik}-m_i}}
-=\operatorname{softmax}(S_{ij}).
-\]
-Thus, storing \(M_i\) is sufficient to compute the correct softmax of\(S\) exactly,
+=\text{softmax}(S_{ij}).
+$$
+
+Thus, storing $$M_i$$ is sufficient to compute the correct softmax of $$S$$ exactly,
 without ever computing maximum and normalization factor again.
 
-\subsubsection{Blockwise Form of the Backward Pass}
+### Blockwise Form of the Backward Pass
 
 To connect the index-level gradients with the FlashAttention implementation, we now express all
 quantities in terms of \emph{blocks} (tiles).  
