@@ -680,3 +680,4 @@ Available at: https://nbk-code.github.io/2026/02/10/flash-attention.html
   howpublished = {\url{https://nbk-code.github.io/2026/02/10/flash-attention.html}},
   note         = {Blog post}
 }
+```
