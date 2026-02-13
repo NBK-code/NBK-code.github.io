@@ -509,9 +509,11 @@ D_i = \mathrm{rowsum}(O_i \odot dO_i).
 $$
 
  - **Gradients for $$K$$ and $$V$$**:  
-For each key/value tile $$j$$:
- -- Load $$K_j, V_j$$.
- -- For each query tile $$i$$:
+     For each key/value tile $$j$$:
+   
+     -- Load $$K_j, V_j$$.
+   
+     -- For each query tile $$i$$:
    
    $$
    S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},\qquad
