@@ -266,10 +266,13 @@ $$
 
 This can be written as
 
-$$dV_{ij} = \sum_mP^T_{im}dO_{mj}.
 $$
+dV_{ij} = \sum_mP^T_{im}dO_{mj}.
+$$
+
 Now let us now on to $$dQ$$ and $$dK$$. 
 In the above derivation, we used Kronecker delta function, which is defined as
+
 $$
 \delta_{ij} =
 \begin{cases}
@@ -277,13 +280,15 @@ $$
 0, & \text{if } i \neq j.
 \end{cases}
 $$
+
 Using chain rule, we have
 $$
-    \begin{split}
-        dQ_{ij}&=\sum_{mnklrt}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}\\
-        &=\sum_{klrt}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}
-    \end{split}
+\begin{split}
+dQ_{ij}&=\sum_{mnklrt}\frac{\partial \mathcal{L}}{\partial O_{mn}}\frac{\partial O_{mn}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}\\
+&=\sum_{klrt}\frac{\partial \mathcal{L}}{\partial P_{kl}}\frac{\partial P_{kl}}{\partial S_{rt}}\frac{\partial S_{rt}}{\partial Q_{ij}}
+\end{split}
 $$
+
 Similarly
 $$
     \begin{split}
