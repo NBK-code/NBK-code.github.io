@@ -488,7 +488,7 @@ dK_j \;\mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij}^{T} Q_i,\qquad
 dQ_i \;\mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij} K_j.
 $$
 
-Here, $$M_i$$ is the log-sum-exp normalization vector stored from the forward pass (None in $M_i[:, \text{ None}]$ is to broadcast the values of $M_i$ across the columns), 
+Here, $$M_i$$ is the log-sum-exp normalization vector stored from the forward pass (None in $$M_i[:, \text{ None}]$$ is to broadcast the values of $$M_i$$ across the columns), 
 and $$D_i$$ ($$\odot$$ is elementwise multiplication) is a per-row scalar defined by
 
 $$
@@ -501,56 +501,58 @@ The notation $$\mathrm{rowsum}(\cdot)$$ sums across columns.
 
 Using these quantities, the backward pass proceeds as follows.
 
-\begin{itemize}
-    \item \textbf{Preprocess:}  
-    For each query tile \(i\), load \(O_i\) and \(dO_i\) and compute  
-    \[
-        D_i = \mathrm{rowsum}(O_i \odot dO_i).
-    \]
-    This is a small per-row vector reused throughout the backward pass.
+- **Preprocess**:
+For each query tile $$i$$, load $$O_i$$ and $$dO_i$$ and compute
+  
+$$
+D_i = \mathrm{rowsum}(O_i \odot dO_i).
+$$
 
-    \item \textbf{Gradients for \(K\) and \(V\):}  
-    For each key/value tile \(j\):
-    \begin{enumerate}
-        \item Load \(K_j, V_j\).
-        \item For each query tile \(i\):
-        \[
-        S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},\qquad
-        P_{ij} = \exp\!\left(S_{ij} - M_i[:,\text{ None}]\right),
-        \]
-        \[
-        dV_j \mathrel{+}= P_{ij}^{T} dO_i,
-        \qquad
-        dP_{ij} = dO_i V_j^{T},
-        \]
-        \[
-        dS_{ij} = P_{ij} \odot \left(dP_{ij} - D_i[:,\text{ None}]\right),
-        \qquad
-        dK_j \mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij}^{T} Q_i.
-        \]
-    \end{enumerate}
+This is a small per-row vector reused throughout the backward pass.
 
-    \item \textbf{Gradients for \(Q\):}  
-    For each query tile \(i\):
-    \begin{enumerate}
-        \item Initialize \(dQ_i = 0\).
-        \item For each key/value tile \(j\):
-        \[
-        S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},\qquad
-        P_{ij} = \exp\!\left(S_{ij} - M_i[:,\text{ None}]\right),
-        \]
-        \[
-        dP_{ij} = dO_i V_j^{T},\qquad
-        dS_{ij} = P_{ij} \odot \left(dP_{ij} - D_i[:,\text{ None}]\right),
-        \]
-        \[
-        dQ_i \mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij} K_j.
-        \]
-    \end{enumerate}
-\end{itemize}
+ - **Gradients for $$K$$ and $$V$$**:  
+For each key/value tile $$j$$:
+ -- Load $$K_j, V_j$$.
+ -- For each query tile $$i$$:
+   $$
+   S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},\qquad
+   P_{ij} = \exp\!\left(S_{ij} - M_i[:,\text{ None}]\right),
+   $$
+   
+   $$
+   dV_j \mathrel{+}= P_{ij}^{T} dO_i,
+   \qquad
+   dP_{ij} = dO_i V_j^{T},
+   $$
+   
+   $$
+   dS_{ij} = P_{ij} \odot \left(dP_{ij} - D_i[:,\text{ None}]\right),
+   \qquad
+   dK_j \mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij}^{T} Q_i.
+   $$
 
-\noindent
+
+- **Gradients for $$Q$$**:  
+    For each query tile $$i$$:
+
+-- Initialize $$dQ_i = 0$$.
+-- For each key/value tile $$j$$:
+
+$$
+S_{ij} = \frac{Q_i K_j^{T}}{\sqrt{d}},\qquad
+P_{ij} = \exp\!\left(S_{ij} - M_i[:,\text{ None}]\right),
+$$
+
+$$
+dP_{ij} = dO_i V_j^{T},\qquad
+dS_{ij} = P_{ij} \odot \left(dP_{ij} - D_i[:,\text{ None}]\right),
+$$
+
+$$
+dQ_i \mathrel{+}= \frac{1}{\sqrt{d}}\, dS_{ij} K_j.
+$$
+
 This blockwise formulation reproduces the exact gradients of standard attention while avoiding
-materialization of the full \(N\times N\) matrices \(P\) and \(dP\), enabling the memory-efficient backward pass used in FlashAttention.
+materialization of the full $$N\times N$$ matrices $$P$$ and $$dP$$, enabling the memory-efficient backward pass used in FlashAttention.
 
 
