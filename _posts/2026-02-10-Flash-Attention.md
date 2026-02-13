@@ -22,9 +22,11 @@ speed and scalability on long sequences.
 ## Background
 ### The Self-Attention Mechanism
 In the self-attention mechanism, the output for each token is computed as
-\begin{equation}
+
+$$
 O = \text{softmax}\left(\frac{QK^{T}}{\sqrt{d}}\right)V,
-\end{equation}
+$$
+
 where $$Q, K$$, and $$V$$ are the query, key, and value matrices, and $$d$$ is the head dimension. This operation
 allows each token to attend to all others in the sequence, capturing contextual dependencies effectively.
 
@@ -79,14 +81,18 @@ There are three ingredients that go into constructing the forward pass of flash 
 #### Numerically Stable Softmax
 The softmax operation converts raw attention scores into normalized probabilities, ensuring that the weights
 assigned to all key positions for each query sum to one. However, directly computing
-\begin{equation}
+
+$$
 \text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}
-\end{equation}
+$$
+
 can lead to numerical overflow or underflow when the values of $$x_i$$ are large in magnitude.
 To improve stability, the softmax is implemented in its numerically stable form by subtracting the maximum value within each row:
-\begin{equation}
+
+$$
 \text{softmax}(x_i) = \frac{e^{x_i - \max_j(x_j)}}{\sum_k e^{x_k - \max_j(x_j)}}.
-\end{equation}
+$$
+
 Notice that the new $$\text{softmax}(x_i)$$ still computes the same value as $$e^{-\max_j(x_j)}$$ in the numerator and the denominator cancel each other out. But now $$x_i - \max_j(x_j)$$ is always less than or equal to zero and hence $$e^{-\max_j(x_j)}$$ do not explode. This formulation ensures that all exponential arguments are non-positive, preventing overflow while preserving the exact mathematical result.
 
 #### Online Softmax
@@ -101,10 +107,11 @@ $$s_1, s_2, \dots, s_N$$. Instead of computing the maximum and summing over all 
 the algorithm updates them incrementally.
 After processing the first $$i$$ scores, it keeps track of
 the running maximum $$m_i$$ and normalization factor $$l_i$$:
-\begin{equation}
+
+$$
 m_i = \max(m_{i-1}, s_i), \qquad
 l_i = e^{m_{i-1}-m_i}l_{i-1} + e^{s_i - m_i}.
-\end{equation}
+$$
 
 The first term, $$e^{m_{i-1}-m_i}l_{i-1}$$, rescales the previously accumulated normalization factor $$l_{i-1}$$
 to account for any change in the running maximum from $$m_{i-1}$$ to $$m_i$$,
@@ -115,9 +122,11 @@ had been processed simultaneously, but using only constant memory.
 
 Once all $$N$$ scores have been processed, the final maximum $$m_N$$ and normalization factor $$l_N$$
 are used to compute the softmax output for each element:
-\begin{equation}
+
+$$
 p_i = \frac{e^{s_i - m_N}}{l_N}.
-\end{equation}
+$$
+
 This yields the exact same result as the standard softmax,
 while requiring only a single pass through the data and constant memory overhead.
 
@@ -165,9 +174,11 @@ a_{B_M1} & a_{B_M2} & \cdots & a_{B_MB_K}
 $$
 
 Each output block $$C_{ij}$$ is computed as a sum of products between corresponding tiles:
-\begin{equation}
+
+$$
 C_{ij} = \sum_{k=1}^{p} A_{ik} B_{kj}
-\end{equation}
+$$
+
 This means that one pair of blocks $$A_{ik}$$ and $$B_{kj}$$ is loaded into fast memory,
 multiplied to produce a partial result, and then accumulated into $$C_{ij}$$.
 By performing the computation block by block, the algorithm minimizes memory movement while maximizing data reuse. This blockwise strategy forms the basis of most efficient matrix multiplication kernels,
@@ -189,26 +200,33 @@ The FlashAttention forward pass can be summarized as follows:
 **Algorithm**
 
 For each pair of tiles $$(Q_i, K_j, V_j)$$:
-\begin{equation}
+
+$$
 S_{ij} = Q_i K_j^{T},
-\end{equation}
-\begin{equation}
+$$
+
+$$
 m_{ij} = \max(\text{rowmax}(S_{ij}), m_{ij-1}),
-\end{equation}
-\begin{equation}
+$$
+
+$$
 P_{ij} = \exp(S_{ij} - m_{ij}),
-\end{equation}
-\begin{equation}
+$$
+
+$$
 l_{ij} = \text{rowsum}(P_{ij}) + l_{ij-1} \exp(m_{ij-1} - m_{ij}),
-\end{equation}
-\begin{equation}
+$$
+
+$$
 O_i = \text{diag}(\exp(m_{ij-1} - m_{ij})) O_i + P_{ij} V_j.
-\end{equation}
+$$
 
 After all key/value tiles are processed, the final normalization is applied:
-\begin{equation}
+
+$$
 O_i = (\text{diag}(l_{iN}))^{-1} O_i,
-\end{equation}
+$$
+
 where $$N$$ is the total number of key/value tiles.
 
 Here, $$m_{ij}$$ represents the updated running maximum for each query row,
@@ -293,23 +311,31 @@ We now describe the backward pass of flash attention, which computes gradients w
 Here I will provide a detailed derivation of the gradients. The derivation given in the flash attention paper is a little confusing, and hence I will provide my own derivation.
 
 We have the following equations:
-\begin{equation}
+
+$$
 S = \frac{QK^T}{\sqrt{d}},\qquad P = \text{softmax}(S), \qquad O = PV.
-\end{equation}
+$$
+
 We can write these equations explicitly with all the indices as follows:
-\begin{equation}
+
+$$
 S_{ij} = \sum_k\frac{Q_{ik}K_{jk}}{\sqrt{d}},
-\end{equation}
-\begin{equation}
+$$
+
+$$
 P_{ij}=\text{softmax}(S_{ij})=\frac{\exp{(\sum_kQ_{ik}K_{jk}/\sqrt{d})}}{\sum_l \exp{(\sum_mQ_{im}K_{lm}/\sqrt{d})}},
-\end{equation}
-\begin{equation}
+$$
+
+$$
 O_{ij} = \sum_kP_{ik}V_{kj}.
-\end{equation}
+$$
+
 Our problem is to find the gradients
-\begin{equation}
+
+$$
 dQ_{ij} = \frac{\partial \mathcal{L}}{\partial Q_{ij}},\qquad dK_{ij} = \frac{\partial \mathcal{L}}{\partial K_{ij}},\qquad dV_{ij} = \frac{\partial \mathcal{L}}{\partial V_{ij}},
-\end{equation}
+$$
+
 given the gradient with respect to the output $$ dO_{ij} = \partial \mathcal{L}/\partial O_{ij}$$.
 
 Now, let us get the gradients one by one. We will start with the easiest.
