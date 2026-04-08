@@ -14,3 +14,19 @@
 <p align="center">
   <img src="/assets/RL_continual_learning_1.png" width="800">
 </p>
+
+<p align="center">
+  <img src="/assets/RL_continual_learning_2.png" width="800">
+</p>
+
+<p align="center">
+  <img src="/assets/RL_continual_learning_3.png" width="800">
+</p>
+
+<p align="center">
+  <img src="/assets/RL_continual_learning_4.png" width="800">
+</p>
+
+<p align="center">
+  <img src="/assets/RL_continual_learning_5.png" width="800">
+</p>
