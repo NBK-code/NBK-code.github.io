@@ -14,5 +14,5 @@
 ![RL](/assets/RL_continual_learning_1.png){width=400px}
 
 <p align="center">
-  <img src="/assets/RL_continual_learning_1.png" width="400">
+  <img src="/assets/RL_continual_learning_1.png" width="800">
 </p>
