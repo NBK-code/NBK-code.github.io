@@ -11,4 +11,8 @@
 7. SDPO achieves continual learning by using demonstrations inside the LLM context window to get on-policy response and optimizing on it.
 
 
-![RL](/assets/RL_continual_learning_1.png){ width=400px }
+![RL](/assets/RL_continual_learning_1.png){width=400px}
+
+<p align="center">
+  <img src="/assets/RL_continual_learning_1.png" width="400">
+</p>
