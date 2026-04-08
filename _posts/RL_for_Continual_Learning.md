@@ -9,3 +9,5 @@
 5. Forgetting correlates well with KL divergence between the fine-tuned model and the base model on the new task.
 6. On-policy nature of RL is responsible for less forgetting when compared to SFT. This produces minimal shift in the KL divergence.
 7. SDPO achieves continual learning by using demonstrations inside the LLM context window to get on-policy response and optimizing on it.
+
+![Test image](https://myoctocat.com/assets/images/base-octocat.svg)
