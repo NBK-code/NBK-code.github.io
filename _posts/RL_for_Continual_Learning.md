@@ -10,4 +10,5 @@
 6. On-policy nature of RL is responsible for less forgetting when compared to SFT. This produces minimal shift in the KL divergence.
 7. SDPO achieves continual learning by using demonstrations inside the LLM context window to get on-policy response and optimizing on it.
 
-![Test image](https://myoctocat.com/assets/images/base-octocat.svg)
+
+![RL](/assets/RL_continual_learning_1.png)
