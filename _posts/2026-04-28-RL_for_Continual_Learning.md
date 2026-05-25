@@ -12,6 +12,14 @@ Given a some text, say a solution to a hard math problem, there are three ways w
 
 Where would you put the text to gain maximum performance as measured by a) ability to solve similar problems and b) ability to solve harder but similar problems?
 
+The paper "SFT Memorizes, RL Generalizes: A Comparative Study of Foundation Model Post-training" showed that RL tends to generalize while SFT tends to memorize.
+
+## Why RL performs better than SFT?
+
+## RL paradigms
+### Reinforcement Learning with Verifiable Rewards (PLVR)
+### On-Policy Distillation (OPD)
+
 1. RL exhibits less forgetting than SFT.
 2. RL = Reverse KL, SFT = Forward KL
 3. Reverse KL = Mode seeking, Forward KL = Mode covering
