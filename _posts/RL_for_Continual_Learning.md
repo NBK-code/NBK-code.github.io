@@ -15,7 +15,7 @@ Where would you put the text to gain maximum performance as measured by a) abili
 The paper "SFT Memorizes, RL Generalizes: A Comparative Study of Foundation Model Post-training" showed that RL tends to generalize while SFT tends to memorize. The authors performed experiments on two environments: General Points and V-IRL to test the model on arithmatic reasoning and spatial reasoning abilities respectively. In General Points environment, the input consists of four playing cards and the model is aksed to find out a way to get a target number (24) using the numbers on the cards using basic arithmetic operations. After training (RL/SFT), the model is evaluated on its performance on the variation of the task, where the rules are changed (such as to treat symbols 'J', 'Q', and 'K' either as '11', '12', and '13', respectively, or all as the same number '10'.) In V-IRL environment, the input is navigation instructions and the model is suppose to follow the instructions to reach the target location. After training, the model is evaluated on its performance on task variations (such as giving relative directions over directions or using different city). For both the environments, both language only based version as well as vision-language versions are available. The authors plot the succes rate (%) vs training compute. The typical plot that they get is of the form
 
 <p align="center">
-  <img src="/assets/RL_vs_SFT.png" width="800">
+  <img src="/assets/RL_vs_SFT.png" width="400">
 </p>
 
 ## Why RL performs better than SFT?
