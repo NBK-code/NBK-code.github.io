@@ -12,7 +12,7 @@ Given a some text, say a solution to a hard math problem, there are three ways w
 
 Where would you put the text to gain maximum performance as measured by a) ability to solve similar problems (in-distribution) and b) ability to solve harder but similar problems (out-of-distribution)?
 
-The paper "SFT Memorizes, RL Generalizes: A Comparative Study of Foundation Model Post-training" showed that RL tends to generalize while SFT tends to memorize. The paper performed their experiments on two environments: General Points and V-IRL. In General Points environment
+The paper "SFT Memorizes, RL Generalizes: A Comparative Study of Foundation Model Post-training" showed that RL tends to generalize while SFT tends to memorize. The paper performed experiments on two environments: General Points and V-IRL. In General Points environment, the input consists of four playing cards and the model is prompted to find out a way to get a target number (24) using the numbers on the cards using basic arithmetic operations. After RL training, the model is evaluated on its performance on the variation of the task, where the rules are changed (such as to treat symbols 'J', 'Q', and 'K' either as '11', '12', and '13', respectively, or all as the same number '10'.) 
 
 ## Why RL performs better than SFT?
 
