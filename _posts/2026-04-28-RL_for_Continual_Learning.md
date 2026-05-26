@@ -10,7 +10,7 @@ Given a some text, say a solution to a hard math problem, there are three ways w
 2) make the text part of post training supervised finetuning or
 3) make the text part of RL fine tuning.
 
-Where would you put the text to gain maximum performance as measured by a) ability to solve similar problems and b) ability to solve harder but similar problems?
+Where would you put the text to gain maximum performance as measured by a) ability to solve similar problems (in-distribution) and b) ability to solve harder but similar problems (out-of-distribution)?
 
 The paper "SFT Memorizes, RL Generalizes: A Comparative Study of Foundation Model Post-training" showed that RL tends to generalize while SFT tends to memorize.
 
