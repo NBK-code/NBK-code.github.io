@@ -7,7 +7,7 @@
 Given a some text, say a solution to a hard math problem, there are three ways we could use this text to train a model: 
 
 1) make the text part of the pretraining data corpus,
-2) make the text part of post training semi-supervised finetuning or
+2) make the text part of post training supervised finetuning or
 3) make the text part of RL fine tuning.
 
 Where would you put the text to gain maximum performance as measured by a) ability to solve similar problems and b) ability to solve harder but similar problems?
