@@ -1,3 +1,9 @@
+---
+title: "LLM Post Training"
+mathjax: true
+layout: post
+---
+
 # 1. Introduction
 
 The remarkable capabilities of modern large language models (LLMs) are the result of a multi-stage training pipeline. After large-scale pretraining on internet-scale text corpora, models are typically refined through a post-training stage designed to align their behavior with human expectations and task-specific objectives. Early post-training approaches relied primarily on supervised fine-tuning (SFT), where models were trained to imitate high-quality demonstrations produced by human annotators. While SFT significantly improves instruction following and conversational abilities, recent advances in reasoning models have highlighted its limitations. Models such as DeepSeek-R1 and OpenAI's reasoning systems suggest that the most substantial improvements in complex reasoning may arise not from better imitation, but from learning through interaction and feedback.
