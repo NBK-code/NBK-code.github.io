@@ -14,63 +14,60 @@ This article presents a mathematical overview of the major post-training methods
 
 # 2. Supervised Fine-Tuning
 
-Supervised fine-tuning (SFT) serves as the foundation of nearly every modern LLM post-training pipeline. After pretraining, a language model already possesses broad linguistic knowledge and general reasoning capabilities, but its responses may not consistently follow user instructions or align with human expectations. SFT addresses this problem by training the model on high-quality prompt-response pairs collected from human annotators or curated datasets. The objective is straightforward: given an input prompt, the model should generate the corresponding reference response. Despite the emergence of more sophisticated post-training algorithms, SFT remains an indispensable first stage because it provides the initialization upon which nearly all subsequent optimization methods are built.
+Supervised Fine-Tuning (SFT) forms the foundation of almost every modern LLM post-training pipeline. After pretraining on massive text corpora, a language model already possesses a broad understanding of language and factual knowledge. However, it may not reliably follow user instructions or produce responses that align with human expectations. SFT addresses this problem by training the model on a collection of high-quality prompt-response pairs created by human annotators. Given a prompt, the objective of the model is simply to reproduce the corresponding demonstration.
 
-Let (x) denote an input prompt and let
+Let $$x$$ denote the input prompt and let
 
-[
-y = (y_1, y_2, \ldots, y_T)
-]
+\begin{equation}
+y = (y_1,y_2,\ldots,y_T)
+\end{equation}
 
-denote the corresponding response consisting of (T) tokens. Modern language models generate responses autoregressively, predicting one token at a time conditioned on the prompt and all previously generated tokens. Throughout this article, we represent the language model by the policy
+denote the corresponding response consisting of $$T$$ tokens. Modern language models generate responses autoregressively, producing one token at a time conditioned on the prompt and all previously generated tokens. Throughout this article, we denote the language model by the policy
 
-[
-\pi_\theta(y_t \mid x, y_{<t}),
-]
+\begin{equation}
+\pi_\theta(y_t|x,y_{<t}),
+\end{equation}
 
-where (y_{<t} = (y_1, \ldots, y_{t-1})) denotes the prefix generated before the (t)-th token, and (\theta) represents the model parameters. Under the autoregressive assumption, the probability of generating the complete response can be factorized as
+where $$y_{<t}=(y_1,\ldots,y_{t-1})$$ denotes the prefix generated before the $$t$$-th token and $$\theta$$ denotes the model parameters. Under the autoregressive assumption, the probability of generating the complete response can therefore be written as
 
-[
-\pi_\theta(y \mid x)
-====================
+\begin{equation}
+\pi_\theta(y|x)
+===============
 
 \prod_{t=1}^{T}
-\pi_\theta(y_t \mid x, y_{<t}).
-]
+\pi_\theta(y_t|x,y_{<t}).
+\end{equation}
 
 Suppose we are given a supervised dataset
 
-[
+\begin{equation}
 \mathcal{D}
 ===========
 
-{(x_i, y_i)}_{i=1}^{N},
-]
+{(x_i,y_i)}_{i=1}^{N},
+\end{equation}
 
-where each prompt (x_i) is paired with a reference response (y_i). Supervised fine-tuning learns the model parameters by maximizing the likelihood of these demonstrations. The corresponding optimization problem is
+where each prompt $$x_i$$ is paired with a reference response $$y_i$$. The goal of supervised fine-tuning is to find the model parameters $$\theta$$ that maximize the likelihood of the demonstrations contained in this dataset. Mathematically, this can be written as
 
-[
-\max_{\theta}
+\begin{equation}
+\max_\theta
 \sum_{(x,y)\in\mathcal{D}}
-\log
-\pi_\theta(y \mid x).
-]
+\log\pi_\theta(y|x).
+\end{equation}
 
-Using the autoregressive factorization, the log-likelihood of each response can be written as
+Using the autoregressive decomposition given by equation (3), we obtain
 
-[
-\log
-\pi_\theta(y \mid x)
-====================
+\begin{equation}
+\log\pi_\theta(y|x)
+===================
 
 \sum_{t=1}^{T}
-\log
-\pi_\theta(y_t \mid x, y_{<t}),
-]
+\log\pi_\theta(y_t|x,y_{<t}),
+\end{equation}
 
-which leads to the familiar negative log-likelihood objective
+which leads to the familiar supervised fine-tuning objective
 
-[
+\begin{equation}
 \mathcal{L}_{\mathrm{SFT}}
 ==========================
 
@@ -79,11 +76,9 @@ which leads to the familiar negative log-likelihood objective
 \sum_{(x,y)\in\mathcal{D}}
 \sum_{t=1}^{T}
 \log
-\pi_\theta(y_t \mid x, y_{<t}).
-]
+\pi_\theta(y_t|x,y_{<t}).
+\end{equation}
 
-Minimizing this objective is equivalent to minimizing the token-level cross-entropy loss between the model's predicted distribution and the reference response. During training, the ground-truth prefix (y_{<t}) is always provided as input when predicting the next token, a procedure commonly known as *teacher forcing*. This provides a dense supervision signal, since every token in every demonstration contributes directly to the optimization objective.
+Equation (6) is simply the negative log-likelihood or, equivalently, the token-level cross-entropy loss used to train modern language models. During training, the correct prefix $$y_{<t}$$ is always provided to the model when predicting the next token. This procedure, known as *teacher forcing*, provides a dense supervision signal because every token in every demonstration contributes directly to the optimization objective. As a result, SFT is computationally efficient, stable to optimize, and produces an excellent initialization for subsequent post-training algorithms.
 
-The success of supervised fine-tuning stems from its simplicity. It is computationally efficient, stable to optimize, and requires only high-quality demonstration data. More importantly, it produces a strong policy that serves as the starting point for nearly all modern post-training algorithms. Reinforcement learning methods such as PPO, GRPO, and OPD, as well as preference optimization methods such as DPO, all begin from an SFT-trained model rather than a randomly initialized language model.
-
-Despite these advantages, supervised fine-tuning has several important limitations. First, it optimizes the likelihood of reproducing demonstrations rather than the quality of the generated responses. In other words, the objective encourages the model to imitate a particular demonstration instead of directly optimizing the desired outcome. Second, many reasoning tasks admit multiple valid solution paths, yet SFT reinforces only the demonstrations available in the training data. Finally, because training conditions on the ground-truth prefix while inference conditions on the model's own predictions, a mismatch known as *exposure bias* arises, allowing errors to accumulate during generation. These limitations motivate the development of post-training methods that optimize language models using richer feedback signals, beginning with reinforcement learning methods based on policy optimization.
+Despite its simplicity and effectiveness, supervised fine-tuning has several important limitations. The most fundamental limitation is that the objective in equation (6) encourages the model to imitate demonstrations rather than optimize the quality of its responses. In many reasoning tasks, there may exist multiple valid reasoning paths leading to the same correct answer, yet SFT only reinforces the particular demonstrations present in the training data. Furthermore, during training the model always conditions on the ground-truth prefix, whereas during inference it must condition on its own previously generated tokens. This mismatch, commonly referred to as *exposure bias*, can cause errors to accumulate during generation. These limitations motivate the need for post-training methods that optimize models using richer feedback signals, beginning with reinforcement learning.
