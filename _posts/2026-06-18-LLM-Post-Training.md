@@ -16,23 +16,16 @@ This article presents a mathematical overview of the major post-training methods
 
 Supervised Fine-Tuning (SFT) forms the foundation of almost every modern LLM post-training pipeline. After pretraining on massive text corpora, a language model already possesses a broad understanding of language and factual knowledge. However, it may not reliably follow user instructions or produce responses that align with human expectations. SFT addresses this problem by training the model on a collection of high-quality prompt-response pairs created by human annotators. Given a prompt, the objective of the model is simply to reproduce the corresponding demonstration.
 
-Let $x$ denote the input prompt and let $y = (y_1,y_2,\ldots,y_T)$ denote the corresponding response consisting of $T$ tokens. Modern language models generate responses autoregressively, producing one token at a time conditioned on the prompt and all previously generated tokens. Throughout this article, we denote the language model by the policy $\pi_\theta(y_t|x,y_{<t}),$ where $y_{<t}=(y_1,\ldots,y_{t-1})$ denotes the prefix generated before the $$t$$-th token and $$\theta$$ denotes the model parameters. Under the autoregressive assumption, the probability of generating the complete response can therefore be written as
+Let $x$ denote the input prompt and let $$y = (y_1,y_2,\ldots,y_T)$$ denote the corresponding response consisting of $T$ tokens. Modern language models generate responses autoregressively, producing one token at a time conditioned on the prompt and all previously generated tokens. Throughout this article, we denote the language model by the policy $$\pi_\theta(y_t|x,y_{<t}),$$ where $y_{<t}=(y_1,\ldots,y_{t-1})$ denotes the prefix generated before the $$t$$-th token and $$\theta$$ denotes the model parameters. Under the autoregressive assumption, the probability of generating the complete response can therefore be written as
 
 \begin{equation}
-\pi_\theta(y|x)
-===============
-
-\prod_{t=1}^{T}
-\pi_\theta(y_t|x,y_{<t}).
+\pi_\theta(y|x)=\prod_{t=1}^{T}\pi_\theta(y_t|x,y_{<t}).
 \end{equation}
 
 Suppose we are given a supervised dataset
 
 \begin{equation}
-\mathcal{D}
-===========
-
-{(x_i,y_i)}_{i=1}^{N},
+\mathcal{D}={(x_i,y_i)}_{i=1}^{N},
 \end{equation}
 
 where each prompt $$x_i$$ is paired with a reference response $$y_i$$. The goal of supervised fine-tuning is to find the model parameters $$\theta$$ that maximize the likelihood of the demonstrations contained in this dataset. Mathematically, this can be written as
