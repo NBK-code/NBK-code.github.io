@@ -41,10 +41,7 @@ Using the autoregressive decomposition given by equation (3), we obtain
 which leads to the familiar supervised fine-tuning objective
 
 \begin{equation}
-\mathcal{L}_{\mathrm{SFT}}=\sum_{(x,y)\in\mathcal{D}}
-\sum_{t=1}^{T}
-\log
-\pi_\theta(y_t|x,y_{<t}).
+\mathcal{L}_{SFT}=\sum_{(x,y)\in\mathcal{D}} \sum_{t=1}^{T} \log \pi_\theta(y_t|x,y_{<t}).
 \end{equation}
 
 Equation (6) is simply the negative log-likelihood or, equivalently, the token-level cross-entropy loss used to train modern language models. During training, the correct prefix $$y_{<t}$$ is always provided to the model when predicting the next token. This procedure, known as *teacher forcing*, provides a dense supervision signal because every token in every demonstration contributes directly to the optimization objective. As a result, SFT is computationally efficient, stable to optimize, and produces an excellent initialization for subsequent post-training algorithms.
