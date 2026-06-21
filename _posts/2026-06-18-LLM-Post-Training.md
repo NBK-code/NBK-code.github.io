@@ -39,9 +39,7 @@ where each prompt $$x_i$$ is paired with a reference response $$y_i$$. The goal 
 Using the autoregressive decomposition given by equation (3), we obtain
 
 \begin{equation}
-\log\pi_\theta(y|x)
-===================
-
+\log\pi_\theta(y|x)=
 \sum_{t=1}^{T}
 \log\pi_\theta(y_t|x,y_{<t}),
 \end{equation}
@@ -49,12 +47,7 @@ Using the autoregressive decomposition given by equation (3), we obtain
 which leads to the familiar supervised fine-tuning objective
 
 \begin{equation}
-\mathcal{L}_{\mathrm{SFT}}
-==========================
-
-*
-
-\sum_{(x,y)\in\mathcal{D}}
+\mathcal{L}_{\mathrm{SFT}}=\sum_{(x,y)\in\mathcal{D}}
 \sum_{t=1}^{T}
 \log
 \pi_\theta(y_t|x,y_{<t}).
