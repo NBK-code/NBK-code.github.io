@@ -22,13 +22,7 @@ Let $x$ denote the input prompt and let $y = (y_1,y_2,\ldots,y_T)$ denote the co
 \pi_\theta(y|x)=\prod_{t=1}^{T}\pi_\theta(y_t|x,y_{<t}).
 \end{equation}
 
-Suppose we are given a supervised dataset
-
-\begin{equation}
-\mathcal{D}={(x_i,y_i)}_{i=1}^{N},
-\end{equation}
-
-where each prompt $$x_i$$ is paired with a reference response $$y_i$$. The goal of supervised fine-tuning is to find the model parameters $$\theta$$ that maximize the likelihood of the demonstrations contained in this dataset. Mathematically, this can be written as
+Suppose we are given a supervised dataset $\mathcal{D}={(x_i,y_i)}_{i=1}^{N},$ where each prompt $$x_i$$ is paired with a reference response $$y_i$$. The goal of supervised fine-tuning is to find the model parameters $$\theta$$ that maximize the likelihood of the demonstrations contained in this dataset. Mathematically, this can be written as
 
 \begin{equation}
 \max_\theta
