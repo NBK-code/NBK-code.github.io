@@ -16,7 +16,7 @@ This article presents a mathematical overview of the major post-training methods
 
 Supervised Fine-Tuning (SFT) forms the foundation of almost every modern LLM post-training pipeline. After pretraining on massive text corpora, a language model already possesses a broad understanding of language and factual knowledge. However, it may not reliably follow user instructions or produce responses that align with human expectations. SFT addresses this problem by training the model on a collection of high-quality prompt-response pairs created by human annotators. Given a prompt, the objective of the model is simply to reproduce the corresponding demonstration.
 
-Let $$x$$ denote the input prompt and let $$y = (y_1,y_2,\ldots,y_T)$$ denote the corresponding response consisting of $$T$$ tokens. Modern language models generate responses autoregressively, producing one token at a time conditioned on the prompt and all previously generated tokens. Throughout this article, we denote the language model by the policy \begin{equation}\pi_\theta(y_t \mid x,y_{<t}),\end{equation} where $$y_{<t}=(y_1,\ldots,y_{t-1})$$ denotes the prefix generated before the $$t$$-th token and $\theta$ denotes the model parameters. Under the autoregressive assumption, the probability of generating the complete response can therefore be written as
+Let $$x$$ denote the input prompt and let $$y = (y_1,y_2,\ldots,y_T)$$ denote the corresponding response consisting of $$T$$ tokens. Modern language models generate responses autoregressively, producing one token at a time conditioned on the prompt and all previously generated tokens. Throughout this article, we denote the language model by the policy \begin{equation}\pi_\theta(y_t \mid x,y_{<t}),\end{equation} where $$y_{<t}=(y_1,\ldots,y_{t-1})$$ denotes the prefix generated before the $$t$$-th token and $$\theta$$ denotes the model parameters. Under the autoregressive assumption, the probability of generating the complete response can therefore be written as
 
 \begin{equation}
 \pi_\theta(y|x)=\prod_{t=1}^{T}\pi_\theta(y_t|x,y_{<t}).
@@ -41,7 +41,7 @@ Using the autoregressive decomposition given by equation (3), we obtain
 which leads to the familiar supervised fine-tuning objective
 
 \begin{equation}
-\mathcal{L}_{SFT}=\sum_{(x,y)\in\mathcal{D}} \sum_{t=1}^{T} \log \pi_\theta(y_t|x,y_{<t}).
+\mathcal{L}=\sum_{(x,y)\in\mathcal{D}} \sum_{t=1}^{T} \log \pi_\theta(y_t|x,y_{<t}).
 \end{equation}
 
 Equation (6) is simply the negative log-likelihood or, equivalently, the token-level cross-entropy loss used to train modern language models. During training, the correct prefix $$y_{<t}$$ is always provided to the model when predicting the next token. This procedure, known as *teacher forcing*, provides a dense supervision signal because every token in every demonstration contributes directly to the optimization objective. As a result, SFT is computationally efficient, stable to optimize, and produces an excellent initialization for subsequent post-training algorithms.
