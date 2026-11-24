@@ -874,7 +874,7 @@ The vector $$\nabla_{\mathbf{x}}\log P(\mathbf{x},t)$$ is the score in many dime
 
 # 3. Diffusion Models
 
-![Diffusion models use a forward SDE to noise the initial image and a reverse (backward) SDE to denoise it.](/assets/dm.png){: width="60%"}
+![Diffusion models use a forward SDE to noise the initial image and a reverse (backward) SDE to denoise it.](/assets/dm.png){: style="display: block; margin: 0 auto; width: 80%;"}
 
 <p align="center">
   <img src="/assets/dm.png" width="800">
